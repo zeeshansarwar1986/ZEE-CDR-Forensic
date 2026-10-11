@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZEE CDR Forensic - Zee Meta Advertising Agency (Reg)</title>
+  
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Leaflet GIS Map & Vis-Network CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/vis-network/standalone/umd/vis-network.min.css" />
+
+  <!-- Custom Cyber-Investigative Theme -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Top Header Navigation Bar (Branded to ZEE CDR Forensic) -->
+  <header id="top-header">
+    <div class="header-left">
+      <div class="zee-logo-box">
+        <svg class="zee-logo-svg" viewBox="0 0 24 24">
+          <path d="M4 4h16l-10 10h10v6H4l10-10H4V4z"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-title">ZEE <span>CDR Forensic</span></div>
+        <div class="brand-subtitle">Zee Meta Advertising Agency (Reg)</div>
+      </div>
+    </div>
+
+    <!-- Global Top Search Input -->
+    <div class="header-center-search">
+      <i class="fa-solid fa-magnifying-glass search-icon-inside"></i>
+      <input type="text" id="global-search-bar" class="header-search-input" placeholder="Search number, IMEI, IMSI, CNIC, case ID, location...">
+    </div>
+
+    <!-- Header Tools & User Profile -->
+    <div class="header-right-tools">
+      <div class="live-clock-badge">
+        <i class="fa-regular fa-clock text-cyan-bright"></i>
+        <span id="live-header-clock">Sun, Jun 14 12:34:57 PM PKT</span>
+      </div>
+
+      <button id="capture-screenshot-btn" class="tool-btn" title="Capture Screenshot">
+        <i class="fa-solid fa-camera"></i>
+      </button>
+      <button id="export-excel-btn" class="tool-btn" title="Quick Export Excel">
+        <i class="fa-solid fa-file-excel" style="color:#10b981;"></i>
+      </button>
+
+      <div class="user-profile-badge">
+        <div class="user-avatar">ZEE</div>
+        <div>
+          <strong style="color:#fff; font-size:0.8rem;">Zee Investigator</strong>
+          <div style="font-size:0.68rem; color:var(--text-muted);">IO / Analyst</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Application Container -->
+  <div id="app-container">
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar">
+      <div class="nav-item active" id="nav-overview" data-view="view-overview">
+        <i class="fa-solid fa-house"></i>
+        <span>Dashboard</span>
+      </div>
+      <div class="nav-item" id="nav-add-case-side" onclick="document.getElementById('modal-add-case').classList.add('active');">
+        <i class="fa-solid fa-circle-plus"></i>
+        <span>Add New Case</span>
+      </div>
+      <div class="nav-item" id="nav-cases" data-view="view-cases">
+        <i class="fa-solid fa-folder-open"></i>
+        <span>View Cases</span>
+      </div>
+      <div class="nav-item" id="nav-forensic-imei" data-view="view-forensic-imei">
+        <i class="fa-solid fa-mobile-screen-button"></i>
+        <span>IMEI Info</span>
+      </div>
+      <div class="nav-item" id="nav-raw-cdr" data-view="view-raw-cdr">
+        <i class="fa-solid fa-phone"></i>
+        <span>Number Lookup</span>
+      </div>
+      <div class="nav-item" id="nav-intelligence" data-view="view-intelligence">
+        <i class="fa-solid fa-id-card"></i>
+        <span>Ownership Finder</span>
+      </div>
+      <div class="nav-item" id="nav-exporter" data-view="view-exporter">
+        <i class="fa-solid fa-file-lines"></i>
+        <span>Reports</span>
+      </div>
+      <div class="nav-item" id="nav-advance-cdr" data-view="view-advance-cdr">
+        <i class="fa-solid fa-eye"></i>
+        <span>Watchlist</span>
+      </div>
+      <div class="nav-item" id="nav-multi-cross" data-view="view-multi-cross">
+        <i class="fa-solid fa-code-compare"></i>
+        <span>Common Report</span>
+      </div>
+      <div class="nav-item" id="nav-upload" data-view="view-upload">
+        <i class="fa-solid fa-database"></i>
+        <span>Add Intelligence DB</span>
+      </div>
+      <div class="nav-item" id="nav-geolocation" data-view="view-geolocation">
+        <i class="fa-solid fa-map-location-dot"></i>
+        <span>Geo-Location Map</span>
+      </div>
+      <div class="nav-item" id="nav-link-analysis" data-view="view-link-analysis">
+        <i class="fa-solid fa-diagram-project"></i>
+        <span>Link Analysis</span>
+      </div>
+      
+      <!-- New Sidebar Item: About Agency (Requested by User) -->
+      <div class="nav-item" id="nav-about-agency" data-view="view-about">
+        <i class="fa-solid fa-circle-info"></i>
+        <span>About Agency & Contact</span>
+      </div>
+
+      <!-- Sidebar Global Filters Drawer Trigger -->
+      <button class="sidebar-filter-btn" id="open-filter-btn">
+        <i class="fa-solid fa-filter"></i>
+        <span>Global Filters Panel</span>
+      </button>
+    </aside>
+
+    <!-- Main Dynamic Content Area -->
+    <main id="main-content">
+
+      <!-- VIEW 1: COMMAND CENTER OVERVIEW DASHBOARD -->
+      <section id="view-overview" class="view-page active">
+        
+        <!-- Command Center Banner -->
+        <div>
+          <div class="banner-badge"><i class="fa-solid fa-shield-halved"></i> ZEE CDR FORENSIC V5.2.0</div>
+          <h1 class="command-title">Investigation Command Center</h1>
+          <p class="command-subtitle">Zee Meta Advertising Agency (Reg) - Forensic Intelligence Division</p>
+        </div>
+
+        <!-- 8 Metric Cards Grid -->
+        <div class="metrics-8-grid">
+          <div class="metric-card-box">
+            <div class="metric-top-icon blue"><i class="fa-solid fa-folder"></i></div>
+            <div>
+              <div class="metric-box-val" id="m8-total-cases">8</div>
+              <div class="metric-box-lbl">Total Cases</div>
+            </div>
+          </div>
+          <div class="metric-card-box">
+            <div class="metric-top-icon amber"><i class="fa-regular fa-clock"></i></div>
+            <div>
+              <div class="metric-box-val" id="m8-pending-cases">6</div>
+              <div class="metric-box-lbl">Pending Cases</div>
+            </div>
+          </div>
+          <div class="metric-card-box">
+            <div class="metric-top-icon green"><i class="fa-solid fa-circle-check"></i></div>
+            <div>
+              <div class="metric-box-val" id="m8-completed-cases">1</div>
+              <div class="metric-box-lbl">Completed Cases</div>
+            </div>
+          </div>
+          <div class="metric-card-box">
+            <div class="metric-top-icon purple"><i class="fa-solid fa-circle-exclamation"></i></div>
+            <div>
+              <div class="metric-box-val" id="m8-active-investigations">1</div>
+              <div class="metric-box-lbl">Active Investigations</div>
+            </div>
+          </div>
+          <div class="metric-card-box">
+            <div class="metric-top-icon cyan"><i class="fa-solid fa-copy"></i></div>
+            <div>
+              <div class="metric-box-val" id="m8-total-cdrs">21</div>
+              <div class="metric-box-lbl">Total Uploaded CDRs</div>
+            </div>
+          </div>
+          <div class="metric-card-box">
+            <div class="metric-top-icon blue"><i class="fa-solid fa-phone"></i></div>
+            <div>
+              <div class="metric-box-val" id="m8-analyzed-numbers">8,855</div>
+              <div class="metric-box-lbl">Analyzed Numbers</div>
+            </div>
+          </div>
+          <div class="metric-card-box">
+            <div class="metric-top-icon purple"><i class="fa-solid fa-users"></i></div>
+            <div>
+              <div class="metric-box-val" id="m8-common-numbers">4,155</div>
+              <div class="metric-box-lbl">Common Numbers</div>
+            </div>
+          </div>
+          <div class="metric-card-box">
+            <div class="metric-top-icon cyan"><i class="fa-solid fa-location-dot"></i></div>
+            <div>
+              <div class="metric-box-val" id="m8-locations-tracked">1,759</div>
+              <div class="metric-box-lbl">Locations Tracked</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 Quick Action Cards -->
+        <div class="quick-actions-grid">
+          <div class="action-card-box" onclick="window.App.switchView('view-forensic-imei');">
+            <div class="action-card-icon"><i class="fa-solid fa-mobile-screen"></i></div>
+            <div>
+              <div class="action-card-title">IMEI Info <i class="fa-solid fa-arrow-right" style="font-size:0.8rem; color:var(--accent-blue-bright);"></i></div>
+              <div class="action-card-sub">Look up device details from TAC database</div>
+            </div>
+          </div>
+
+          <div class="action-card-box" onclick="document.getElementById('modal-add-case').classList.add('active');">
+            <div class="action-card-icon"><i class="fa-solid fa-circle-plus"></i></div>
+            <div>
+              <div class="action-card-title">Add New Case <i class="fa-solid fa-arrow-right" style="font-size:0.8rem; color:var(--accent-blue-bright);"></i></div>
+              <div class="action-card-sub">Register FIR, assign IO, start investigation</div>
+            </div>
+          </div>
+
+          <div class="action-card-box" onclick="window.App.switchView('view-cases');">
+            <div class="action-card-icon"><i class="fa-solid fa-folder-open"></i></div>
+            <div>
+              <div class="action-card-title">View All Cases <i class="fa-solid fa-arrow-right" style="font-size:0.8rem; color:var(--accent-blue-bright);"></i></div>
+              <div class="action-card-sub">Search, filter & open case workspaces</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5 Analytics Charts Grid -->
+        <div class="charts-top-3-grid">
+          <div class="cyber-card">
+            <div class="card-header">
+              <div class="card-title"><i class="fa-solid fa-chart-pie text-cyan-bright"></i> Investigation Progress</div>
+            </div>
+            <div style="height: 220px; position:relative;">
+              <canvas id="chart-investigation-progress"></canvas>
+            </div>
+          </div>
+
+          <div class="cyber-card">
+            <div class="card-header">
+              <div class="card-title"><i class="fa-solid fa-chart-column text-blue"></i> Most Active Cases</div>
+            </div>
+            <div style="height: 220px; position:relative;">
+              <canvas id="chart-most-active-cases"></canvas>
+            </div>
+          </div>
+
+          <div class="cyber-card">
+            <div class="card-header">
+              <div class="card-title"><i class="fa-solid fa-location-dot text-green"></i> Frequent Locations</div>
+            </div>
+            <div style="height: 220px; position:relative;">
+              <canvas id="chart-frequent-locations"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="charts-bottom-2-grid">
+          <div class="cyber-card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><i class="fa-solid fa-chart-line text-cyan-bright"></i> Software Usage (Daily)</div>
+                <div style="font-size:0.75rem; color:var(--text-dim);">When you opened this application (last 30 days, Pakistan time PKT)</div>
+              </div>
+            </div>
+            <div style="height: 230px; position:relative;">
+              <canvas id="chart-software-usage-daily"></canvas>
+            </div>
+          </div>
+
+          <div class="cyber-card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><i class="fa-solid fa-wave-square text-purple"></i> Software Open Times (Hourly)</div>
+                <div style="font-size:0.75rem; color:var(--text-dim);">Which hours you usually open the app (Pakistan time PKT)</div>
+              </div>
+            </div>
+            <div style="height: 230px; position:relative;">
+              <canvas id="chart-software-open-hourly"></canvas>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- VIEW 2: ABOUT AGENCY & INVOICE CONTACT INFO (NEWLY ADDED VIEW) -->
+      <section id="view-about" class="view-page">
+        <!-- Hero Header -->
+        <div class="agency-hero-card">
+          <div>
+            <div class="banner-badge" style="background:rgba(255,255,255,0.1); color:#fff; border-color:rgba(255,255,255,0.2);">
+              OFFICIAL AGENCY PROFILE
+            </div>
+            <h1 style="font-size:1.75rem; font-weight:800; color:#fff; margin-top:0.25rem;">
+              Zee Meta Advertising Agency (Reg)
+            </h1>
+            <p style="font-size:0.95rem; color:var(--accent-blue-bright); font-weight:600; margin-top:0.2rem;">
+              Your Brand | Our Strategy | Real Results
+            </p>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.4rem; max-width:620px;">
+              grow your business with digital marketing & state-of-the-art forensic CDR intelligence solutions.
+            </p>
+          </div>
+
+          <!-- Phone Numbers from Invoice -->
+          <div style="display:flex; flex-direction:column; gap:0.6rem; align-items:flex-end;">
+            <a href="https://wa.me/923007467676" target="_blank" class="agency-contact-pill">
+              <i class="fa-brands fa-whatsapp" style="font-size:1.1rem; color:#25d366;"></i> Call / WhatsApp: +92 300 7467676
+            </a>
+            <a href="https://wa.me/923336003596" target="_blank" class="agency-contact-pill">
+              <i class="fa-brands fa-whatsapp" style="font-size:1.1rem; color:#25d366;"></i> Call / WhatsApp: +92 333 6003596
+            </a>
+          </div>
+        </div>
+
+        <!-- Meta Partner Platforms -->
+        <div class="cyber-card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-handshake text-cyan-bright"></i> Certified Business Partner Platforms</div>
+          </div>
+          <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+            <div class="partner-badge"><i class="fa-brands fa-meta text-cyan-bright" style="font-size:1.1rem;"></i> Meta Business Partner</div>
+            <div class="partner-badge"><i class="fa-brands fa-facebook text-blue" style="font-size:1.1rem;"></i> Facebook Ads</div>
+            <div class="partner-badge"><i class="fa-brands fa-instagram text-pink" style="font-size:1.1rem;"></i> Instagram</div>
+            <div class="partner-badge"><i class="fa-brands fa-tiktok text-cyan" style="font-size:1.1rem;"></i> TikTok Marketing</div>
+            <div class="partner-badge"><i class="fa-brands fa-youtube text-red" style="font-size:1.1rem;"></i> YouTube Ads</div>
+            <div class="partner-badge"><i class="fa-brands fa-google text-amber" style="font-size:1.1rem;"></i> Google Ads Partner</div>
+          </div>
+        </div>
+
+        <!-- Agency Purpose & Services (ہمارا مقصد اور کام کیا ہے) -->
+        <div class="grid-2">
+          <div class="cyber-card">
+            <div class="card-header">
+              <div class="card-title"><i class="fa-solid fa-bullseye text-amber"></i> ہمارا مقصد اور کام کیا ہے؟ (Agency Mission & Purpose)</div>
+            </div>
+            <div style="font-size:0.9rem; line-height:1.7; display:flex; flex-direction:column; gap:0.8rem; color:#e2e8f0;">
+              <p>
+                <strong>زی میٹا ایڈورٹائزنگ ایجنسی (رجسٹرڈ)</strong> اور <strong>ZEE CDR Forensic</strong> کا بنیادی مقصد لا نافذ کرنے والے اداروں، قانونی تحقیقاتی اداروں، اور رجسٹرڈ گروپس کو جدید ترین AI کی طاقت سے لیس فارنزک انٹیلی جنس اور ڈیجیٹل گروتھ سولوشنز فراہم کرنا ہے۔
+              </p>
+              <div style="padding:0.75rem; background:rgba(37,99,235,0.1); border-left:3px solid var(--accent-zee-blue); border-radius:6px;">
+                <strong>ہمارا ہدف (Our Goal):</strong> اعلیٰ ترین سطح کی تکنیکی درستگی (Technical Precision)، ڈیٹا سیکیورٹی، اور موثر حکمتِ عملی کے ذریعے بہترین نتائج (Real Results) اور کیس ریزولوشن کو یقینی بنانا۔
+              </div>
+            </div>
+          </div>
+
+          <div class="cyber-card">
+            <div class="card-header">
+              <div class="card-title"><i class="fa-solid fa-list-check text-green"></i> ایجنسی کی بنیادی خدمات (Core Offerings)</div>
+            </div>
+            <div style="font-size:0.875rem; display:flex; flex-direction:column; gap:0.6rem;">
+              <div style="padding:0.5rem; background:rgba(255,255,255,0.03); border-radius:4px;">
+                <strong class="text-cyan-bright"><i class="fa-solid fa-phone"></i> 1. Call Detail Record (CDR) Analytics:</strong> مشتبہ موبائل نمبرز کے کال لاگز، بی پارٹی فریکوئنسی، اور کال ڈوریشن کا تیز رفتار خودکار تجزیہ۔
+              </div>
+              <div style="padding:0.5rem; background:rgba(255,255,255,0.03); border-radius:4px;">
+                <strong class="text-green"><i class="fa-solid fa-location-dot"></i> 2. Geo-Location & Route Tracking:</strong> سیل ٹاور ڈیٹا کی بنیاد پر مشتبہ افراد کی موومنٹ، فاصلہ، اور 1x-10x سپیڈ پلے بیک۔
+              </div>
+              <div style="padding:0.5rem; background:rgba(255,255,255,0.03); border-radius:4px;">
+                <strong class="text-amber"><i class="fa-solid fa-mobile-screen"></i> 3. IMEI / IMSI Forensic Error Fixer:</strong> 15-ہندسوں پر مشتمل IMEI میں غلطیوں کی Luhn الگورتھم سے خودکار اصلاح اور ڈیوائس ماڈل ٹریکنگ۔
+              </div>
+              <div style="padding:0.5rem; background:rgba(255,255,255,0.03); border-radius:4px;">
+                <strong class="text-purple"><i class="fa-solid fa-bullhorn"></i> 4. Digital Ads & Meta Marketing:</strong> فیس بک، انسٹاگرام، ٹک ٹاک، اور گوگل ایڈز پر برانڈ گروتھ اور ٹارگیٹڈ مہمات۔
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Agency Values & Guarantees (Bottom Row from Invoice) -->
+        <div class="cyber-card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-shield-heart text-pink"></i> Agency Guarantees & Values (Your Success is Our Priority)</div>
+          </div>
+          <div class="grid-3" style="font-size:0.85rem; text-align:center;">
+            <div style="padding:1rem; background:rgba(255,255,255,0.02); border-radius:8px; border:1px solid var(--border-color);">
+              <i class="fa-solid fa-bullseye text-cyan-bright" style="font-size:1.5rem; margin-bottom:0.4rem;"></i>
+              <div><strong>Targeted Audience</strong></div>
+              <div class="text-muted" style="font-size:0.75rem;">Precision targeting & analytics</div>
+            </div>
+            <div style="padding:1rem; background:rgba(255,255,255,0.02); border-radius:8px; border:1px solid var(--border-color);">
+              <i class="fa-solid fa-chart-line text-green" style="font-size:1.5rem; margin-bottom:0.4rem;"></i>
+              <div><strong>Better ROI</strong></div>
+              <div class="text-muted" style="font-size:0.75rem;">Maximum efficiency & impact</div>
+            </div>
+            <div style="padding:1rem; background:rgba(255,255,255,0.02); border-radius:8px; border:1px solid var(--border-color);">
+              <i class="fa-solid fa-handshake text-amber" style="font-size:1.5rem; margin-bottom:0.4rem;"></i>
+              <div><strong>Trusted Partner</strong></div>
+              <div class="text-muted" style="font-size:0.75rem;">Reliable 24/7 technical support</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 3: CASE MANAGEMENT -->
+      <section id="view-cases" class="view-page">
+        <div class="page-header">
+          <div>
+            <h1 class="command-title"><i class="fa-solid fa-folder-open text-cyan-bright"></i> View All Cases</h1>
+            <p class="command-subtitle">Search, filter & open case workspaces</p>
+          </div>
+          <button class="tool-btn primary" onclick="document.getElementById('modal-add-case').classList.add('active');">
+            <i class="fa-solid fa-plus"></i> Add New Case
+          </button>
+        </div>
+
+        <div class="cyber-card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-list"></i> Registered Case Directory</div>
+            <input type="text" id="search-cases-input" class="form-control" placeholder="Search case title, IO, station..." style="width:260px;">
+          </div>
+          <div class="table-responsive">
+            <table class="cyber-table">
+              <thead>
+                <tr>
+                  <th>Case #</th>
+                  <th>Case Title</th>
+                  <th>Offence Category</th>
+                  <th>Police Station</th>
+                  <th>Investigating Officer</th>
+                  <th>Status</th>
+                  <th>Updated</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="cases-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 4: CDR INGESTION -->
+      <section id="view-upload" class="view-page">
+        <div class="page-header">
+          <div>
+            <h1 class="command-title"><i class="fa-solid fa-database text-cyan-bright"></i> Add Intelligence Database</h1>
+            <p class="command-subtitle">Ingest raw CDR files (CSV, XLSX, TXT) into intelligence store</p>
+          </div>
+        </div>
+
+        <div class="cyber-card" style="align-items:center; text-align:center; padding:3rem 1.5rem;">
+          <div style="font-size:3rem; color:var(--accent-blue); margin-bottom:1rem;">
+            <i class="fa-solid fa-file-arrow-up"></i>
+          </div>
+          <h3 style="font-size:1.2rem; font-weight:700; margin-bottom:0.5rem;">Drag & Drop Raw CDR Files Here</h3>
+          <p class="text-muted" style="max-width:480px; margin-bottom:1.5rem; font-size:0.85rem;">
+            Supports Jazz, Zong, Ufone, Telenor, and SCO telecom CDR formats. Automatically detects Target Number, Operator, IMEI/IMSI tags, and timestamp ranges.
+          </p>
+          <input type="file" id="cdr-file-input" accept=".csv, .xlsx, .xls, .txt" style="display:none;">
+          <button class="tool-btn primary" onclick="document.getElementById('cdr-file-input').click();">
+            <i class="fa-solid fa-folder-open"></i> Select File from Computer
+          </button>
+
+          <div id="ai-parse-summary" style="display:none; width:100%; max-width:640px; margin-top:2rem; text-align:left;" class="cyber-card">
+            <div class="card-header">
+              <div class="card-title text-cyan-bright"><i class="fa-solid fa-robot"></i> AI Auto-Parsing Telemetry Result</div>
+            </div>
+            <div class="grid-2" style="font-size:0.85rem;">
+              <div><strong>Target:</strong> <span id="parse-target-num" class="text-green">03005551234</span></div>
+              <div><strong>Operator:</strong> <span id="parse-operator" class="text-cyan-bright">Jazz</span></div>
+              <div><strong>Parsed:</strong> <span id="parse-records">1,200 Records</span></div>
+              <div><strong>Date Range:</strong> <span id="parse-date-range">2026-10-01 to 2026-10-08</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 5: ADVANCE CDR / WATCHLIST -->
+      <section id="view-advance-cdr" class="view-page">
+        <div class="page-header">
+          <div>
+            <h1 class="command-title"><i class="fa-solid fa-eye text-cyan-bright"></i> Watchlist & Advance Telemetry</h1>
+            <p class="command-subtitle">Active suspect telemetry, peak hours, and key points forensic summary</p>
+          </div>
+        </div>
+        <div class="cyber-card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-star text-amber"></i> Target Forensic Summary</div>
+          </div>
+          <div style="font-size:0.9rem; display:flex; flex-direction:column; gap:0.75rem;">
+            <div><strong>Target Number:</strong> <span class="text-cyan-bright">03005551234</span> (Jazz Pakistan)</div>
+            <div><strong>Top Contact:</strong> 03129876543 (Shahbaz Ahmed) - 284 Calls</div>
+            <div><strong>Switch-Off Gap:</strong> Oct 05 from 02:15 AM to 06:30 AM (4.25 hours off)</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 6: RAW CDR / NUMBER LOOKUP -->
+      <section id="view-raw-cdr" class="view-page">
+        <div class="page-header">
+          <div>
+            <h1 class="command-title"><i class="fa-solid fa-phone text-cyan-bright"></i> Number Lookup & Raw CDR Grid</h1>
+            <p class="command-subtitle">Detailed interaction records, cell location transitions, and MFC details</p>
+          </div>
+        </div>
+        <div class="cyber-card">
+          <div class="card-header">
+            <input type="text" id="raw-cdr-search" class="form-control" placeholder="Search number, location, IMEI..." style="width:280px;">
+            <span class="text-muted" id="raw-cdr-total-label">Showing 1-25 of 1,200 records</span>
+          </div>
+          <div class="table-responsive">
+            <table class="cyber-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Timestamp</th>
+                  <th>B-Party Number</th>
+                  <th>Operator</th>
+                  <th>Type</th>
+                  <th>Duration</th>
+                  <th>Cell Location</th>
+                  <th>IMEI Linked</th>
+                </tr>
+              </thead>
+              <tbody id="raw-cdr-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 7: INTELLIGENCE / OWNERSHIP FINDER -->
+      <section id="view-intelligence" class="view-page">
+        <div class="page-header">
+          <div>
+            <h1 class="command-title"><i class="fa-solid fa-id-card text-cyan-bright"></i> Ownership Finder & CNIC Intelligence</h1>
+            <p class="command-subtitle">NADRA replica CNIC lookup, linked SIM count, and address verification</p>
+          </div>
+        </div>
+        <div class="cyber-card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-magnifying-glass"></i> Search CNIC Ownership</div>
+          </div>
+          <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+            <input type="text" id="cnic-input" class="form-control" value="37405-1234567-1" placeholder="Enter CNIC...">
+            <button class="tool-btn primary" id="btn-search-cnic">Search</button>
+          </div>
+          <div id="cnic-result-box" style="padding:1rem; background:#090e1a; border-radius:8px; font-size:0.85rem;"></div>
+        </div>
+      </section>
+
+      <!-- VIEW 8: IMEI FORENSICS -->
+      <section id="view-forensic-imei" class="view-page">
+        <div class="page-header">
+          <div>
+            <h1 class="command-title"><i class="fa-solid fa-mobile-screen-button text-cyan-bright"></i> IMEI Info & Error Fixer</h1>
+            <p class="command-subtitle">Look up device details from TAC database and fix check-digit errors</p>
+          </div>
+        </div>
+        <div class="cyber-card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-wrench text-amber"></i> Luhn Check-Digit Calculator & TAC Lookup</div>
+          </div>
+          <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+            <input type="text" id="imei-fixer-input" class="form-control" value="864201041234568">
+            <button class="tool-btn primary" id="btn-fix-imei">Fix & Lookup TAC</button>
+          </div>
+          <div id="imei-fix-result" style="padding:1rem; background:#090e1a; border-radius:8px;"></div>
+        </div>
+      </section>
+
+      <!-- VIEW 9: GEOLOCATION MAP (Integrated with Geoapify Geocoding API) -->
+      <section id="view-geolocation" class="view-page">
+        <div class="page-header">
+          <div>
+            <h1 class="command-title"><i class="fa-solid fa-map-location-dot text-cyan-bright"></i> Geo-Location Map & Geoapify GIS Engine</h1>
+            <p class="command-subtitle">Interactive cell tower mapping, Geoapify geocoding search, and animated route playback</p>
+          </div>
+        </div>
+
+        <!-- Geoapify Geocoding API Search Bar -->
+        <div class="cyber-card" style="margin-bottom: 0.75rem; padding: 0.75rem 1rem;">
+          <div style="display:flex; gap:0.5rem; align-items:center;">
+            <div style="flex:1; position:relative;">
+              <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:0.8rem; top:50%; transform:translateY(-50%); color:var(--accent-blue-bright);"></i>
+              <input type="text" id="geoapify-search-input" class="form-control" value="38 Upper Montagu Street, Westminster W1H 1LJ, United Kingdom" placeholder="Geoapify API Address Search (e.g. 38 Upper Montagu Street, London or F-6 Islamabad)..." style="padding-left:2.5rem; width:100%;">
+            </div>
+            <button id="btn-geoapify-search" class="tool-btn primary">
+              <i class="fa-solid fa-location-crosshairs"></i> Geoapify Geocode
+            </button>
+          </div>
+          <div id="geoapify-search-result" style="display:none; margin-top:0.5rem; font-size:0.825rem;" class="text-cyan-bright"></div>
+        </div>
+
+        <div id="gis-map"></div>
+      </section>
+
+      <!-- VIEW 10: LINK ANALYSIS -->
+      <section id="view-link-analysis" class="view-page">
+        <div class="page-header">
+          <div>
+            <h1 class="command-title"><i class="fa-solid fa-diagram-project text-cyan-bright"></i> i2 Style Link Analysis Diagram</h1>
+            <p class="command-subtitle">Interactive target-to-contact node network visualization</p>
+          </div>
+        </div>
+        <div id="network-container"></div>
+      </section>
+
+      <!-- VIEW 11: MULTI CROSS / COMMON REPORT -->
+      <section id="view-multi-cross" class="view-page">
+        <div class="page-header">
+          <div>
+            <h1 class="command-title"><i class="fa-solid fa-code-compare text-cyan-bright"></i> Common Report & Multi-Target Cross</h1>
+            <p class="command-subtitle">Automated co-location and shared contacts finder</p>
+          </div>
+        </div>
+        <div class="cyber-card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-users text-amber"></i> Shared B-Party Contacts</div>
+          </div>
+          <div class="table-responsive">
+            <table class="cyber-table">
+              <thead>
+                <tr><th>Common B-Party</th><th>Target A Calls</th><th>Target B Calls</th></tr>
+              </thead>
+              <tbody id="cross-contacts-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 12: REPORTS & EXPORTER -->
+      <section id="view-exporter" class="view-page">
+        <div class="page-header">
+          <div>
+            <h1 class="command-title"><i class="fa-solid fa-file-lines text-cyan-bright"></i> Reports & Export Engine</h1>
+            <p class="command-subtitle">Download multi-tab Excel workbooks, PDF reports, and Google Earth KML files</p>
+          </div>
+        </div>
+        <div style="display:flex; gap:1rem;">
+          <button class="tool-btn primary" onclick="window.ExporterModule.exportExcel();">Export Multi-Tab Excel</button>
+          <button class="tool-btn" onclick="window.ExporterModule.exportCSV();">Export CSV</button>
+          <button class="tool-btn" onclick="window.ExporterModule.exportKML();">Export KML Route</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Global Sidebar Filters Panel Drawer -->
+  <div id="filter-drawer">
+    <div class="drawer-header">
+      <div class="card-title text-cyan-bright"><i class="fa-solid fa-filter"></i> Global Filters Panel</div>
+      <button class="tool-btn" id="close-filter-btn"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="drawer-content">
+      <div class="form-group">
+        <label class="form-label">Location / Cell Tower</label>
+        <select id="filter-location" class="form-control">
+          <option value="ALL">All Locations</option>
+          <option value="Super Market, F-6 Islamabad">Super Market, F-6 Islamabad</option>
+          <option value="Blue Area, Islamabad">Blue Area, Islamabad</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Call Type</label>
+        <select id="filter-call-type" class="form-control">
+          <option value="ALL">All Types</option>
+          <option value="Incoming">Incoming</option>
+          <option value="Outgoing">Outgoing</option>
+          <option value="SMS">SMS</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">B-Party Number</label>
+        <input type="text" id="filter-bparty" class="form-control" placeholder="Number...">
+      </div>
+    </div>
+    <div class="drawer-footer">
+      <button class="tool-btn primary" id="btn-apply-filters" style="flex:1;">Apply Filters</button>
+      <button class="tool-btn" id="btn-reset-filters">Reset</button>
+    </div>
+  </div>
+
+  <!-- Modal: Add New Case -->
+  <div class="modal-overlay" id="modal-add-case">
+    <div class="cyber-modal">
+      <div class="modal-header">
+        <div class="card-title text-cyan-bright"><i class="fa-solid fa-circle-plus"></i> Register New Case</div>
+        <button class="tool-btn" onclick="document.getElementById('modal-add-case').classList.remove('active');"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Case # / FIR #</label>
+          <input type="text" id="new-case-num" class="form-control" placeholder="CR-2026-9900">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Case Title</label>
+          <input type="text" id="new-case-title" class="form-control" placeholder="Demolition / Targeted Homicide">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Investigating Officer</label>
+          <input type="text" id="new-case-io" class="form-control" placeholder="Inspector Imran Khan">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="tool-btn" onclick="document.getElementById('modal-add-case').classList.remove('active');">Cancel</button>
+        <button class="tool-btn primary" id="btn-save-new-case">Save Case</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- External Library CDNs -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <!-- JS Modules -->
+  <script src="js/data.js"></script>
+  <script src="js/modules/overview.js"></script>
+  <script src="js/modules/cases.js"></script>
+  <script src="js/modules/advance_cdr.js"></script>
+  <script src="js/modules/graphical_analysis.js"></script>
+  <script src="js/modules/raw_cdr.js"></script>
+  <script src="js/modules/intelligence.js"></script>
+  <script src="js/modules/forensic_imei.js"></script>
+  <script src="js/modules/geolocation.js"></script>
+  <script src="js/modules/link_analysis.js"></script>
+  <script src="js/modules/multi_cross.js"></script>
+  <script src="js/modules/exporter.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
