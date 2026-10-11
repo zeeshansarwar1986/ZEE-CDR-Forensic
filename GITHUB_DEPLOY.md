@@ -1,102 +1,84 @@
 # GitHub Upload & Deployment Guide - ZEE CDR Forensic
-**Zee Meta Advertising Agency (Reg)**
+**Repository**: [https://github.com/zeeshansarwar1986/ZEE-CDR-Forensic](https://github.com/zeeshansarwar1986/ZEE-CDR-Forensic)
 
 ---
 
 ## 🌐 MULTI-LINGUAL INDEX / فہرست / الفهرس
-
-1. [English GitHub Guide](#1-english-github-guide)
-2. [اردو میں گٹ ہب اپ لوڈ گائیڈ](#2-اردو-میں-گٹ-ہب-اپ-لوڈ-گائیڈ)
-3. [دليل الرفع على GitHub باللغة العربية](#3-دليل-الرفع-على-github-باللغة-العربية)
+1. [English Guide](#1-english-guide)
+2. [اردو گائیڈ (سٹیپ بائی سٹیپ طریقہ)](#2-اردو-گائیڈ-سٹیپ-بائی-سٹیپ-طریقہ)
+3. [الدليل باللغة العربية](#3-الدليل-باللغة-العربية)
 
 ---
 
-## 1. ENGLISH GITHUB GUIDE
+## 1. ENGLISH GUIDE
 
-### Method A: Web Browser Upload (Simplest - No Git Required)
-1. Go to [https://github.com/new](https://github.com/new) and log into your GitHub account.
-2. Enter Repository Name: `ZEE-CDR-Forensic`
-3. Select **Public**, leave "Add a README file" unchecked, and click **Create repository**.
-4. On the new repository page, click the link **"uploading an existing file"**.
-5. Drag and drop all files and folders from `c:\Users\hp\Documents\CDR App` into the browser:
+The Git repository has been completely configured and committed locally with:
+- Remote: `https://github.com/zeeshansarwar1986/ZEE-CDR-Forensic.git`
+- Branch: `main`
+- All project files, modules, `index.html`, and `README.md` are staged and committed.
+
+### Method 1: Double-Click "PUSH_TO_GITHUB.bat" (Easiest & Fastest)
+1. In your project folder `c:\Users\hp\Documents\CDR App\`, double-click **`PUSH_TO_GITHUB.bat`**.
+2. A command prompt window will open and connect to GitHub.
+3. Enter your GitHub Username (`zeeshansarwar1986`) and your **GitHub Personal Access Token** (or password).
+4. All files and commits will push directly to `https://github.com/zeeshansarwar1986/ZEE-CDR-Forensic`!
+
+### Method 2: Web Browser Drag & Drop
+1. Open this link in your web browser:
+   [https://github.com/zeeshansarwar1986/ZEE-CDR-Forensic/upload/main](https://github.com/zeeshansarwar1986/ZEE-CDR-Forensic/upload/main)
+2. Drag and drop all files from `c:\Users\hp\Documents\CDR App\` into the browser window:
    - `index.html`
-   - `css/` folder (`css/styles.css`)
-   - `js/` folder (`js/app.js`, `js/data.js`, `js/modules/`)
    - `README.md`
+   - `css/` folder (`styles.css`)
+   - `js/` folder (`app.js`, `data.js`, `modules/`)
    - `LICENSE`
    - `.gitignore`
-6. Click **Commit changes**.
+3. Click **Commit changes**.
 
-### Method B: GitHub Desktop (Recommended Desktop App)
-1. Download & Install [GitHub Desktop](https://desktop.github.com/).
-2. Open GitHub Desktop and click **File -> Add Local Repository**.
-3. Choose path: `c:\Users\hp\Documents\CDR App`.
-4. Click **Publish repository** to push it directly to your GitHub account!
-
-### Method C: Git CLI (Command Line)
-Open PowerShell inside `c:\Users\hp\Documents\CDR App` and run:
-```bash
-git init
-git add .
-git commit -m "Initial release: ZEE CDR Forensic V5.2.0"
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/ZEE-CDR-Forensic.git
-git push -u origin main
+### Method 3: Using a GitHub Personal Access Token (PAT)
+If you generate a GitHub Personal Access Token at [https://github.com/settings/tokens](https://github.com/settings/tokens) with `repo` permissions:
+Run in PowerShell:
+```powershell
+$env:PATH = "$env:LOCALAPPDATA\MinGit\cmd;$env:PATH"
+git push https://<YOUR_TOKEN>@github.com/zeeshansarwar1986/ZEE-CDR-Forensic.git main
 ```
 
 ---
 
-### How to Enable Free Live Web Hosting (GitHub Pages)
-Once uploaded to GitHub:
-1. Open your repository page: `https://github.com/YOUR_USERNAME/ZEE-CDR-Forensic`
-2. Click **Settings** (top right tab).
-3. In the left sidebar, click **Pages**.
-4. Under **Build and deployment -> Branch**, select `main` branch and `/ (root)` folder.
-5. Click **Save**.
-6. Within 1 minute, your app will be live at:
-   `https://YOUR_USERNAME.github.io/ZEE-CDR-Forensic/`
+## 2. اردو گائیڈ (سٹیپ بائی سٹیپ طریقہ)
 
----
+آپ کا پورا پروجیکٹ اور ریڈمی فائل لوکل طور پر گٹ ہب ریپوزٹری کے ساتھ لنک کر دی گئی ہے۔
 
-## 2. اردو میں گٹ ہب اپ لوڈ گائیڈ
+### طریقہ نمبر 1: "PUSH_TO_GITHUB.bat" پر ڈبل کلک کریں (سب سے تیز ترین)
+1. اپنے فولڈر `c:\Users\hp\Documents\CDR App\` میں موجود **`PUSH_TO_GITHUB.bat`** فائل پر ڈبل کلک کریں۔
+2. سامنے کھلنے والی ونڈو میں اپنا گٹ ہب یوزرنیم (`zeeshansarwar1986`) اور ٹوکن (یا پاس ورڈ) درج کریں۔
+3. آپ کا مکمل پروجیکٹ اور ریڈمی فائل فوراً گٹ ہب پر اپ لوڈ ہو جائے گی!
 
-### طریقہ 1: ویب براؤزر کے ذریعے اپ لوڈ (سب سے آسان - بغیر کسی سافٹ ویئر کے)
-1. براؤزر میں [https://github.com/new](https://github.com/new) کھولیں اور اپنے گٹ ہب اکاؤنٹ میں لاگ ان کریں۔
-2. ریپوزٹری کا نام رکھیں: `ZEE-CDR-Forensic`
-3. **Public** منتخب کریں اور **Create repository** بٹن پر کلک کریں۔
-4. اگلے پیج پر **"uploading an existing file"** والے لنکس پر کلک کریں۔
-5. فولڈر `c:\Users\hp\Documents\CDR App` کی تمام فائلیں (`index.html`, `css`, `js`, `README.md`) ڈریگ کر کے گٹ ہب پر ڈراپ کر دیں۔
-6. نیچے **Commit changes** پر کلک کریں۔
-
-### طریقہ 2: گٹ ہب ڈیسک ٹاپ کے ذریعے (GitHub Desktop App)
-1. [GitHub Desktop](https://desktop.github.com/) ڈاؤن لوڈ کریں۔
-2. ایپ کھول کر **File -> Add Local Repository** پر کلک کریں۔
-3. پاتھ سیٹ کریں: `c:\Users\hp\Documents\CDR App`
-4. **Publish repository** بٹن دبائیں، آپ کا تمام کوڈ گٹ ہب پر منتقل ہو جائے گا!
+### طریقہ نمبر 2: ویب براؤزر کے ذریعے ڈائریکٹ اپ لوڈ (سب سے آسان)
+1. براؤزر میں یہ لنک کھولیں:
+   [https://github.com/zeeshansarwar1986/ZEE-CDR-Forensic/upload/main](https://github.com/zeeshansarwar1986/ZEE-CDR-Forensic/upload/main)
+2. اپنے فولڈر `c:\Users\hp\Documents\CDR App` کی تمام فائلیں (`index.html`, `README.md`, `css`, `js`) سلیکٹ کر کے گٹ ہب پر ڈریگ اینڈ ڈراپ (Drag & Drop) کر دیں۔
+3. نیچے **Commit changes** کے بٹن پر کلک کریں۔
 
 ---
 
 ### مفت لائیو ویب سائٹ آن لائن کرنے کا طریقہ (GitHub Pages)
-کوڈ اپ لوڈ ہونے کے بعد:
-1. اپنے گٹ ہب پیج `https://github.com/YOUR_USERNAME/ZEE-CDR-Forensic` پر جائیں۔
-2. اوپر **Settings** ٹیب پر کلک کریں۔
-3. بائیں جانب **Pages** پر کلک کریں۔
-4. Branch میں `main` منتخب کریں اور **Save** پر کلک کریں۔
-5. 1 منٹ میں آپ کی ویب ایپ اس لنک پر لائیو چل جائے گی:
-   `https://YOUR_USERNAME.github.io/ZEE-CDR-Forensic/`
+اپ لوڈ کے بعد اگر آپ اس ایپ کو دنیا بھر میں لائیو انٹرنیٹ پر چلانا چاہتے ہیں:
+1. اپنے گٹ ہب ریپوزٹری پیج کی **Settings** میں جائیں:
+   `https://github.com/zeeshansarwar1986/ZEE-CDR-Forensic/settings/pages`
+2. **Build and deployment -> Branch** میں `main` منتخب کریں اور **Save** پر کلک کریں۔
+3. 1 منٹ کے اندر آپ کی ویب سائٹ اس ایڈریس پر لائیو ہو جائے گی:
+   **`https://zeeshansarwar1986.github.io/ZEE-CDR-Forensic/`**
 
 ---
 
-## 3. دليل الرفع على GitHub باللغة العربية
+## 3. الدليل باللغة العربية
 
-### الطريقة الأولى: الرفع عبر متصفح الويب (الأسهل بدون برامج)
-1. افتح الرابط [https://github.com/new](https://github.com/new) وسجل الدخول لحسابك.
-2. اكتب اسم المستودع: `ZEE-CDR-Forensic`
-3. اختر **Public** ثم اضغط على **Create repository**.
-4. اضغط على خيار **"uploading an existing file"**.
-5. اسحب وانسخ جميع ملفات المجسد `c:\Users\hp\Documents\CDR App` إلى المتصفح.
-6. اضغط **Commit changes**.
+المشروع جاهز ومُعد بالكامل للرفع على مستودعك:
+`https://github.com/zeeshansarwar1986/ZEE-CDR-Forensic.git`
 
-### تشغيل الموقع مجاناً أونلاين (GitHub Pages):
-من إعدادات المستودع **Settings -> Pages** اختر الفرع `main` واضغط **Save**. سيعمل الموقع مباشرة على الرابط:
-`https://YOUR_USERNAME.github.io/ZEE-CDR-Forensic/`
+### الطريقة 1: تشغيل ملف `PUSH_TO_GITHUB.bat`
+انقر نقراً مزدوجاً على الملف `PUSH_TO_GITHUB.bat` داخل المجلد، ثم أدخل اسم المستخدم وكلمة المرور أو رمز الوصول الخاص بك ليتم الرفع فوراً.
+
+### الطريقة 2: السحب والإفلات عبر المتصفح
+افتح الرابط: [https://github.com/zeeshansarwar1986/ZEE-CDR-Forensic/upload/main](https://github.com/zeeshansarwar1986/ZEE-CDR-Forensic/upload/main) واسحب جميع الملفات والمجلدات ثم اضغط **Commit changes**.
