@@ -10,6 +10,11 @@ window.App = {
     this.bindGlobalFilterDrawer();
     this.bindFileUpload();
 
+    // Initialize Backup & Data Manager
+    if (window.BackupModule) {
+      window.BackupModule.init();
+    }
+
     // Initialize Active View
     this.switchView('view-overview');
 

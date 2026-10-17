@@ -109,6 +109,8 @@ window.CasesModule = {
 
     window.CDRDataStore.cases.unshift(newCase);
     this.renderCasesTable();
+    if (window.OverviewModule) window.OverviewModule.renderMetrics();
+    if (window.BackupModule) window.BackupModule.saveToStorage();
     document.getElementById('modal-add-case').classList.remove('active');
     window.App.showToast(`New case ${num} created successfully!`, 'success');
   },
@@ -117,8 +119,10 @@ window.CasesModule = {
     const foundCase = window.CDRDataStore.cases.find(c => c.id === caseId);
     if (foundCase) {
       window.CDRDataStore.currentCaseId = foundCase.id;
-      document.getElementById('header-case-title').innerText = foundCase.title;
-      document.getElementById('header-last-updated').innerText = foundCase.updatedDate;
+      const headerTitle = document.getElementById('header-case-title');
+      if (headerTitle) headerTitle.innerText = foundCase.title;
+      const headerDate = document.getElementById('header-last-updated');
+      if (headerDate) headerDate.innerText = foundCase.updatedDate;
       window.App.showToast(`Switched active investigation to ${foundCase.title}`, 'info');
     }
   },
@@ -127,6 +131,8 @@ window.CasesModule = {
     if (confirm(`Are you sure you want to delete case ${caseId}?`)) {
       window.CDRDataStore.cases = window.CDRDataStore.cases.filter(c => c.id !== caseId);
       this.renderCasesTable();
+      if (window.OverviewModule) window.OverviewModule.renderMetrics();
+      if (window.BackupModule) window.BackupModule.saveToStorage();
       window.App.showToast(`Case ${caseId} deleted.`, 'warning');
     }
   }

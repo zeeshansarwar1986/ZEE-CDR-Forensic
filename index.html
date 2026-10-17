@@ -47,6 +47,11 @@
         <span id="live-header-clock">Sun, Jun 14 12:34:57 PM PKT</span>
       </div>
 
+      <button id="btn-backup-header" class="tool-btn" title="ڈیٹا بیک اپ، اپلوڈ اور ریسیٹ (Data Backup & Reset)" style="border-color: rgba(0, 168, 255, 0.4); color: var(--accent-blue-bright); background: rgba(0, 168, 255, 0.08); font-weight:600;">
+        <i class="fa-solid fa-database"></i>
+        <span>Backup / Reset</span>
+      </button>
+
       <button id="capture-screenshot-btn" class="tool-btn" title="Capture Screenshot">
         <i class="fa-solid fa-camera"></i>
       </button>
@@ -122,6 +127,12 @@
       <div class="nav-item" id="nav-about-agency" data-view="view-about">
         <i class="fa-solid fa-circle-info"></i>
         <span>About Agency & Contact</span>
+      </div>
+
+      <!-- Backup, Restore & Reset Data -->
+      <div class="nav-item" id="nav-backup-data" onclick="if(window.BackupModule) window.BackupModule.openModal();" title="ڈیٹا بیک اپ، اپلوڈ اور ریسیٹ">
+        <i class="fa-solid fa-database text-cyan-bright"></i>
+        <span>Backup & Reset Data</span>
       </div>
 
       <!-- Sidebar Global Filters Drawer Trigger -->
@@ -703,6 +714,104 @@
     </div>
   </div>
 
+  <!-- BACKUP, RESTORE & RESET DATA MODAL -->
+  <div id="modal-backup-reset" class="modal-overlay">
+    <div class="cyber-modal" style="max-width: 650px;">
+      <div class="modal-header">
+        <div class="card-title text-cyan-bright" style="display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-database"></i>
+          <span>ڈیٹا مینجمنٹ: بیک اپ اور ریسیٹ (Data Backup & Reset Center)</span>
+        </div>
+        <button class="tool-btn" onclick="window.BackupModule.closeModal();"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" style="gap: 1.15rem; max-height: 80vh; overflow-y: auto;">
+        
+        <!-- Current Data Telemetry Counter -->
+        <div style="background: rgba(0, 168, 255, 0.08); border: 1px solid rgba(0, 168, 255, 0.25); border-radius: 8px; padding: 0.85rem 1rem; display: flex; justify-content: space-around; text-align: center;">
+          <div>
+            <div id="backup-stat-cases" style="font-size: 1.35rem; font-weight: 700; color: #fff;">0</div>
+            <div style="font-size: 0.725rem; color: var(--text-muted);">کل رجسٹرڈ کیسز (Cases)</div>
+          </div>
+          <div style="border-left: 1px solid rgba(255,255,255,0.1); padding-left: 1rem;">
+            <div id="backup-stat-records" style="font-size: 1.35rem; font-weight: 700; color: #00a8ff;">0</div>
+            <div style="font-size: 0.725rem; color: var(--text-muted);">سی ڈی آر ریکارڈز (CDR Logs)</div>
+          </div>
+          <div style="border-left: 1px solid rgba(255,255,255,0.1); padding-left: 1rem;">
+            <div id="backup-stat-size" style="font-size: 1.35rem; font-weight: 700; color: #10b981;">0 KB</div>
+            <div style="font-size: 0.725rem; color: var(--text-muted);">ڈیٹا سائز (Est. Size)</div>
+          </div>
+        </div>
+
+        <!-- Section 1: Download Backup -->
+        <div class="cyber-card" style="padding: 1rem; border-color: rgba(0, 168, 255, 0.3);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
+            <div style="font-weight: 600; color: #fff; font-size: 0.9rem;">
+              <i class="fa-solid fa-file-arrow-down text-cyan-bright" style="margin-right: 6px;"></i>
+              1. ڈیٹا بیک اپ ڈاؤنلوڈ کریں (Export Backup File)
+            </div>
+            <span class="operator-tag jazz" style="font-size:0.65rem; background:rgba(0,168,255,0.2); color:#38bdf8;">JSON Format</span>
+          </div>
+          <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+            تمام رجسٹرڈ کیسز، سی ڈی آر کال لاگز، ٹارگٹ نمبرز اور فارنزک انٹیلیجنس کا مکمل بیک اپ اپنے کمپیوٹر پر محفوظ کریں۔
+          </p>
+          <button id="btn-download-backup" class="tool-btn primary" style="width: 100%; justify-content: center; padding: 0.65rem;">
+            <i class="fa-solid fa-download"></i> ڈاؤنلوڈ مکمل بیک اپ (Download Full JSON Backup)
+          </button>
+        </div>
+
+        <!-- Section 2: Upload / Restore Backup -->
+        <div class="cyber-card" style="padding: 1rem; border-color: rgba(16, 185, 129, 0.3);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
+            <div style="font-weight: 600; color: #fff; font-size: 0.9rem;">
+              <i class="fa-solid fa-file-arrow-up text-green" style="margin-right: 6px;"></i>
+              2. بیک اپ فائل اپلوڈ اور بحال کریں (Restore Backup File)
+            </div>
+            <span class="operator-tag zong" style="font-size:0.65rem;">Auto-Merge / Restore</span>
+          </div>
+          <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+            پہلے سے محفوظ شدہ بیک اپ (.json) فائل منتخب کریں تاکہ تمام ڈیٹا ایپلیکیشن میں دوبارہ لوڈ ہو جائے۔
+          </p>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <input type="file" id="backup-file-input" accept=".json" style="display:none;">
+            <button id="btn-choose-backup-file" class="tool-btn" style="flex:1; justify-content: center; padding: 0.65rem; border-color: rgba(16,185,129,0.4); color: #34d399;">
+              <i class="fa-solid fa-folder-open"></i> بیک اپ فائل منتخب کریں (Choose .json File)
+            </button>
+            <button id="btn-restore-backup" class="tool-btn" style="padding: 0.65rem 1.25rem; opacity: 0.6;" disabled>
+              <i class="fa-solid fa-rotate-left"></i> بحال کریں (Restore)
+            </button>
+          </div>
+          <div id="backup-file-selected-name" style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted); display:none;"></div>
+        </div>
+
+        <!-- Section 3: Reset / Clear All Data -->
+        <div class="cyber-card" style="padding: 1rem; border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.04);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
+            <div style="font-weight: 600; color: #f87171; font-size: 0.9rem;">
+              <i class="fa-solid fa-triangle-exclamation" style="margin-right: 6px;"></i>
+              3. تمام ڈیٹا ریسیٹ / صاف کریں (Reset & Clear All Data)
+            </div>
+            <span class="operator-tag jazz" style="font-size:0.65rem;">Permanent Wipe</span>
+          </div>
+          <p style="font-size: 0.78rem; color: #fca5a5; margin-bottom: 0.75rem;">
+            انتباہ: یہ عمل تمام کیسز، سی ڈی آر ریکارڈز اور سرچ ہسٹری کو سسٹم سے فوراً مٹا دے گا۔ ریسیٹ کرنے سے پہلے بیک اپ ڈاؤنلوڈ کر لیں۔
+          </p>
+          <div style="display: flex; gap: 0.75rem;">
+            <button id="btn-clear-all-data" class="tool-btn" style="flex: 1; justify-content: center; background: rgba(239, 68, 68, 0.2); border-color: #ef4444; color: #fca5a5; padding: 0.65rem;">
+              <i class="fa-solid fa-trash-can"></i> تمام ڈیٹا ریسیٹ کریں (Wipe All Data)
+            </button>
+            <button id="btn-restore-demo-data" class="tool-btn" style="flex: 1; justify-content: center; border-color: rgba(245, 158, 11, 0.4); color: #fbbf24; padding: 0.65rem;" title="ڈیمو ڈیٹا دوبارہ لوڈ کریں">
+              <i class="fa-solid fa-arrows-rotate"></i> ڈیمو ڈیٹا ری لوڈ کریں (Reload Demo)
+            </button>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="tool-btn" onclick="window.BackupModule.closeModal();">بند کریں (Close)</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Container -->
   <div id="toast-container"></div>
 
@@ -726,6 +835,7 @@
   <script src="js/modules/link_analysis.js"></script>
   <script src="js/modules/multi_cross.js"></script>
   <script src="js/modules/exporter.js"></script>
+  <script src="js/modules/backup_manager.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

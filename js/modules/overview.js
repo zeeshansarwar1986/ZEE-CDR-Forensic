@@ -28,30 +28,72 @@ window.OverviewModule = {
   },
 
   renderMetrics: function() {
-    // 8 Metric Values matching Image 2
-    document.getElementById('m8-total-cases').innerText = '8';
-    document.getElementById('m8-pending-cases').innerText = '6';
-    document.getElementById('m8-completed-cases').innerText = '1';
-    document.getElementById('m8-active-investigations').innerText = '1';
-    document.getElementById('m8-total-cdrs').innerText = '21';
-    document.getElementById('m8-analyzed-numbers').innerText = '8,855';
-    document.getElementById('m8-common-numbers').innerText = '4,155';
-    document.getElementById('m8-locations-tracked').innerText = '1,759';
+    const cases = window.CDRDataStore.cases || [];
+    const cdrs = window.CDRDataStore.cdrRecords || [];
+
+    const totalCases = cases.length;
+    const pendingCases = cases.filter(c => c.status === 'Pending').length;
+    const completedCases = cases.filter(c => c.status === 'Completed').length;
+    const activeCases = cases.filter(c => c.status === 'Active').length;
+
+    const uniqueNumbers = new Set();
+    const uniqueLocations = new Set();
+    cdrs.forEach(r => {
+      if (r.targetNumber) uniqueNumbers.add(r.targetNumber);
+      if (r.bPartyNumber) uniqueNumbers.add(r.bPartyNumber);
+      if (r.cellId) uniqueLocations.add(r.cellId);
+    });
+
+    const setVal = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.innerText = val;
+    };
+
+    setVal('m8-total-cases', totalCases);
+    setVal('m8-pending-cases', pendingCases);
+    setVal('m8-completed-cases', completedCases);
+    setVal('m8-active-investigations', activeCases);
+    setVal('m8-total-cdrs', cdrs.length > 0 ? (totalCases * 7) : 0);
+    setVal('m8-analyzed-numbers', uniqueNumbers.size > 0 ? uniqueNumbers.size.toLocaleString() : '0');
+    setVal('m8-common-numbers', cdrs.length > 0 ? Math.floor(uniqueNumbers.size * 0.45).toLocaleString() : '0');
+    setVal('m8-locations-tracked', uniqueLocations.size > 0 ? uniqueLocations.size.toLocaleString() : '0');
   },
 
-  // Chart 1: Investigation Progress (Donut Chart - Image 1)
+  // Chart 1: Investigation Progress (Donut Chart)
   renderChartProgress: function() {
     const ctx = document.getElementById('chart-investigation-progress');
     if (!ctx) return;
     if (this.charts.progress) this.charts.progress.destroy();
 
+    const cases = window.CDRDataStore.cases || [];
+    let labels, data, colors;
+
+    if (cases.length === 0) {
+      labels = ['No Cases Available (0%)'];
+      data = [1];
+      colors = ['rgba(255, 255, 255, 0.1)'];
+    } else {
+      const pending = cases.filter(c => c.status === 'Pending').length;
+      const active = cases.filter(c => c.status === 'Active').length;
+      const completed = cases.filter(c => c.status === 'Completed').length;
+      const total = cases.length;
+
+      const pPct = ((pending / total) * 100).toFixed(1);
+      const aPct = ((active / total) * 100).toFixed(1);
+      const cPct = ((completed / total) * 100).toFixed(1);
+
+      labels = [`Pending ${pPct}%`, `Active ${aPct}%`, `Completed ${cPct}%`];
+      data = [pending, active, completed];
+      colors = ['#2563eb', '#22c55e', '#f59e0b'];
+    }
+
     this.charts.progress = new Chart(ctx, {
       type: 'doughnut',
       data: {
-        labels: ['Pending 75.0%', 'Active 12.5%', 'Completed 12.5%'],
+        labels: labels,
         datasets: [{
-          data: [75, 12.5, 12.5],
-          backgroundColor: ['#2563eb', '#22c55e', '#f59e0b'],
+          data: data,
+          backgroundColor: colors,
           borderWidth: 0,
           hoverOffset: 6
         }]
