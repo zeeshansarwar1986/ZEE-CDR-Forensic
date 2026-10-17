@@ -1,11 +1,10 @@
 /* ==========================================================================
    MODULE: GEO-LOCATION & MOVEMENT INTELLIGENCE
-   Integrated with Geoapify Geocoding API & High-Definition Dark Map Tiles
-   API Key: b50d8edc4b674fe3bc5317b22aab0296
+   Integrated with Map / Geocoding APIs & High-Definition Dark Map Tiles
    ========================================================================== */
 
 window.GeoLocationModule = {
-  apiKey: 'b50d8edc4b674fe3bc5317b22aab0296',
+  apiKey: '', // Removed old API key - ready for new API key
   map: null,
   layers: {
     towers: L.layerGroup(),
@@ -29,13 +28,20 @@ window.GeoLocationModule = {
     // Default view centered on Islamabad / Rawalpindi sector
     this.map = L.map('gis-map').setView([33.6844, 73.0479], 12);
 
-    // Geoapify Dark Matter Tile Layer
-    const tileUrl = `https://maps.geoapify.com/v1/tile/dark-matter-dark/{z}/{x}/{y}.png?apiKey=${this.apiKey}`;
-
-    L.tileLayer(tileUrl, {
-      maxZoom: 20,
-      attribution: 'Powered by <a href="https://www.geoapify.com/" target="_blank">Geoapify</a> | © OpenStreetMap contributors'
-    }).addTo(this.map);
+    // If API key is provided, use Geoapify dark tiles; otherwise use CartoDB Dark Matter (free & high contrast)
+    if (this.apiKey) {
+      const tileUrl = `https://maps.geoapify.com/v1/tile/dark-matter-dark/{z}/{x}/{y}.png?apiKey=${this.apiKey}`;
+      L.tileLayer(tileUrl, {
+        maxZoom: 20,
+        attribution: 'Powered by <a href="https://www.geoapify.com/" target="_blank">Geoapify</a> | © OpenStreetMap contributors'
+      }).addTo(this.map);
+    } else {
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        maxZoom: 19,
+        subdomains: 'abcd',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+      }).addTo(this.map);
+    }
 
     this.layers.towers.addTo(this.map);
     this.layers.routes.addTo(this.map);
@@ -160,6 +166,17 @@ window.GeoLocationModule = {
   // Geoapify Geocoding API Search Function
   searchGeoapify: function(query) {
     const resultBox = document.getElementById('geoapify-search-result');
+    if (!this.apiKey) {
+      if (resultBox) {
+        resultBox.style.display = 'block';
+        resultBox.innerHTML = `<span class="text-amber"><i class="fa-solid fa-key"></i> براہ کرم نقشہ تلاش کے لیے نئی API Key درج کریں (Awaiting New API Key).</span>`;
+      }
+      if (window.App && window.App.showToast) {
+        window.App.showToast('Please provide an API Key for Geocoding Search', 'warning');
+      }
+      return;
+    }
+
     if (resultBox) {
       resultBox.style.display = 'block';
       resultBox.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Querying Geoapify Geocoding API for "${query}"...`;
@@ -191,7 +208,7 @@ window.GeoLocationModule = {
           marker.bindPopup(`
             <div style="color:#0f172a; font-family:sans-serif; min-width:240px;">
               <div style="font-size:0.7rem; text-transform:uppercase; font-weight:700; color:#0056b3;">
-                <i class="fa-solid fa-location-dot"></i> Geoapify Geocoded Target
+                <i class="fa-solid fa-location-dot"></i> Geocoded Target
               </div>
               <h4 style="margin:4px 0; color:#0f172a; font-size:0.95rem;">${formattedAddress}</h4>
               <div style="font-size:0.8rem; margin-top:4px;"><b>Latitude:</b> ${lat.toFixed(5)}</div>
@@ -211,24 +228,25 @@ window.GeoLocationModule = {
           }
 
           if (window.App && window.App.showToast) {
-            window.App.showToast(`Geoapify Found: ${formattedAddress}`, 'success');
+            window.App.showToast(`Found: ${formattedAddress}`, 'success');
           }
         } else {
           if (resultBox) {
-            resultBox.innerHTML = `<span class="text-red"><i class="fa-solid fa-triangle-exclamation"></i> No results found via Geoapify API for "${query}".</span>`;
+            resultBox.innerHTML = `<span class="text-red"><i class="fa-solid fa-triangle-exclamation"></i> No results found for "${query}".</span>`;
           }
         }
       })
       .catch(err => {
-        console.error('Geoapify Error:', err);
+        console.error('Geocoding Error:', err);
         if (resultBox) {
-          resultBox.innerHTML = `<span class="text-red"><i class="fa-solid fa-triangle-exclamation"></i> Geoapify API Error. Check internet connection.</span>`;
+          resultBox.innerHTML = `<span class="text-red"><i class="fa-solid fa-triangle-exclamation"></i> Geocoding API Error. Check internet connection.</span>`;
         }
       });
   },
 
   // Geoapify Reverse Geocoding API
   reverseGeocode: function(lat, lng) {
+    if (!this.apiKey) return;
     const endpoint = `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lng}&apiKey=${this.apiKey}`;
 
     fetch(endpoint)
@@ -243,7 +261,7 @@ window.GeoLocationModule = {
             .setContent(`
               <div style="color:#0f172a; font-family:sans-serif;">
                 <div style="font-size:0.7rem; text-transform:uppercase; font-weight:700; color:#0056b3;">
-                  <i class="fa-solid fa-globe"></i> Geoapify Reverse Geocode
+                  <i class="fa-solid fa-globe"></i> Location Details
                 </div>
                 <div style="font-size:0.85rem; font-weight:600; margin-top:2px;">${formatted}</div>
                 <div style="font-size:0.75rem; color:#64748b; margin-top:4px;">Coordinates: ${lat.toFixed(5)}, ${lng.toFixed(5)}</div>
@@ -252,7 +270,7 @@ window.GeoLocationModule = {
             .openOn(this.map);
         }
       })
-      .catch(err => console.error('Geoapify Reverse Error:', err));
+      .catch(err => console.error('Reverse Geocode Error:', err));
   },
 
   startPlayback: function() {

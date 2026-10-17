@@ -220,9 +220,16 @@ window.OverviewModule = {
       attributionControl: false
     }).setView([33.7215, 73.0584], 12);
 
-    const apiKey = 'b50d8edc4b674fe3bc5317b22aab0296';
-    L.tileLayer(`https://maps.geoapify.com/v1/tile/dark-matter-dark/{z}/{x}/{y}.png?apiKey=${apiKey}`, {
-      maxZoom: 19
-    }).addTo(this.previewMap);
+    const apiKey = (window.GeoLocationModule && window.GeoLocationModule.apiKey) ? window.GeoLocationModule.apiKey : '';
+    if (apiKey) {
+      L.tileLayer(`https://maps.geoapify.com/v1/tile/dark-matter-dark/{z}/{x}/{y}.png?apiKey=${apiKey}`, {
+        maxZoom: 19
+      }).addTo(this.previewMap);
+    } else {
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        maxZoom: 19,
+        subdomains: 'abcd'
+      }).addTo(this.previewMap);
+    }
   }
 };
