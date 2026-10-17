@@ -15,8 +15,16 @@ window.App = {
       window.BackupModule.init();
     }
 
-    // Initialize Active View
-    this.switchView('view-overview');
+    // Initialize Active View from URL params or default to overview
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialView = urlParams.get('view') || 'view-overview';
+    this.switchView(initialView);
+
+    if (urlParams.get('modal') === 'backup') {
+      setTimeout(() => {
+        if (window.BackupModule) window.BackupModule.openModal();
+      }, 400);
+    }
 
     // Show Welcome Toast
     this.showToast('ZEE CDR Forensic System Initialized (Zee Meta Advertising Agency Reg)', 'success');

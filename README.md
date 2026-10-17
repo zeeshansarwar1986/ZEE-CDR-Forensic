@@ -5,6 +5,7 @@
 
 ## 🌐 MULTI-LINGUAL DOCUMENTATION INDEX / فہرست / الفهرس
 
+0. [📸 Application Visual Showcase & Screenshots](#-application-visual-showcase--screenshots)
 1. [English Documentation](#1-english-documentation)
    - 1.1 [Application Features & Overview](#11-application-features--overview)
    - 1.2 [Developer Architecture & Build Guide](#12-developer-architecture--build-guide)
@@ -17,6 +18,26 @@
    - 3.1 [مميزات ومواصفات التطبيق (Features)](#31-مميزات-ومواصفات-التطبيق-features)
    - 3.2 [دليل المطور والبنية البرمجية (Developer Guide)](#32-دليل-المطور-والبنية-البرمجية-developer-guide)
    - 3.3 [خارطة الطريق والمميزات المستقبلية (Future Roadmap)](#33-خارطة-الطريق-والمميزات-المستقبلية-future-roadmap)
+
+---
+
+## 📸 Application Visual Showcase & Screenshots
+*(Live Screenshots captured directly from the ZEE CDR Forensic Web Platform)*
+
+| 1. Command Center Overview Dashboard | 2. Case Management Module |
+|:---:|:---:|
+| <img src="assets/screenshots/01_overview_dashboard.png" width="100%" alt="Command Center Dashboard"/> | <img src="assets/screenshots/02_cases_management.png" width="100%" alt="Case Management Module"/> |
+| **ڈیش بورڈ:** 8 میٹرک کارڈز، پروگریس ڈونٹ، لائیو کلاک اور تجزیاتی گراف | **کیس مینجمنٹ:** رجسٹرڈ کیسز کی تفصیلات، ایف آئی آر اور ٹریٹمنٹ سوئچر |
+
+| 3. Geo-Location GIS Map (LocationIQ Engine) | 4. Data Backup, Restore & Reset Center |
+|:---:|:---:|
+| <img src="assets/screenshots/03_geolocation_map.png" width="100%" alt="Geo-Location GIS Map"/> | <img src="assets/screenshots/04_backup_reset_modal.png" width="100%" alt="Data Backup, Restore & Reset"/> |
+| **جیو لوکیشن میپ:** ڈارک ٹائلز، سیل ٹاورز، اینیمیٹڈ موومنٹ اور تلاش | **بیک اپ اور ریسیٹ:** مکمل JSON بیک اپ، ری اسٹور اور ڈیٹا کلئیر سنٹر |
+
+| 5. i2-Style Link Analysis Diagram | 6. Raw CDR Smart Data Grid |
+|:---:|:---:|
+| <img src="assets/screenshots/05_link_analysis.png" width="100%" alt="i2 Link Analysis Diagram"/> | <img src="assets/screenshots/06_raw_cdr_grid.png" width="100%" alt="Raw CDR Smart Data Grid"/> |
+| **لنک انالیسس:** مشتبہ روابط، نوڈ نیٹ ورک اور سلائیڈ اوور انسپیکشن | **سمارٹ ڈیٹا گرڈ:** ٹیلی کام آپریٹرز، ڈائریکشن ایروز، فلٹر اور پیجینیشن |
 
 ---
 
