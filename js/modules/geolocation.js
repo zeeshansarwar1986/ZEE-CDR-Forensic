@@ -1,10 +1,11 @@
 /* ==========================================================================
    MODULE: GEO-LOCATION & MOVEMENT INTELLIGENCE
-   Integrated with Map / Geocoding APIs & High-Definition Dark Map Tiles
+   Integrated with LocationIQ Geocoding API & High-Definition Dark Map Tiles
+   API Key: pk.80bbc1c5ad114bb07d75f02cf8820cb0
    ========================================================================== */
 
 window.GeoLocationModule = {
-  apiKey: '', // Removed old API key - ready for new API key
+  apiKey: 'pk.80bbc1c5ad114bb07d75f02cf8820cb0',
   map: null,
   layers: {
     towers: L.layerGroup(),
@@ -28,20 +29,12 @@ window.GeoLocationModule = {
     // Default view centered on Islamabad / Rawalpindi sector
     this.map = L.map('gis-map').setView([33.6844, 73.0479], 12);
 
-    // If API key is provided, use Geoapify dark tiles; otherwise use CartoDB Dark Matter (free & high contrast)
-    if (this.apiKey) {
-      const tileUrl = `https://maps.geoapify.com/v1/tile/dark-matter-dark/{z}/{x}/{y}.png?apiKey=${this.apiKey}`;
-      L.tileLayer(tileUrl, {
-        maxZoom: 20,
-        attribution: 'Powered by <a href="https://www.geoapify.com/" target="_blank">Geoapify</a> | © OpenStreetMap contributors'
-      }).addTo(this.map);
-    } else {
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        maxZoom: 19,
-        subdomains: 'abcd',
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-      }).addTo(this.map);
-    }
+    // LocationIQ Dark Mode Tile Layer
+    const tileUrl = `https://tiles.locationiq.com/v3/dark/r/{z}/{x}/{y}.png?key=${this.apiKey}`;
+    L.tileLayer(tileUrl, {
+      maxZoom: 19,
+      attribution: 'Powered by <a href="https://locationiq.com/" target="_blank">LocationIQ</a> | &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(this.map);
 
     this.layers.towers.addTo(this.map);
     this.layers.routes.addTo(this.map);
@@ -102,7 +95,7 @@ window.GeoLocationModule = {
           <div><b>First Visit:</b> ${loc.firstCall}</div>
           <div><b>Last Visit:</b> ${loc.lastCall}</div>
           <div style="margin-top:6px; font-size:0.75rem; color:#64748b;">
-            <i class="fa-solid fa-earth-americas"></i> Geoapify Verified Location
+            <i class="fa-solid fa-earth-americas"></i> LocationIQ GIS Verified Location
           </div>
         </div>
       `);
@@ -163,13 +156,17 @@ window.GeoLocationModule = {
     }
   },
 
-  // Geoapify Geocoding API Search Function
+  // LocationIQ Geocoding API Search Function
   searchGeoapify: function(query) {
+    this.searchLocationIQ(query);
+  },
+
+  searchLocationIQ: function(query) {
     const resultBox = document.getElementById('geoapify-search-result');
     if (!this.apiKey) {
       if (resultBox) {
         resultBox.style.display = 'block';
-        resultBox.innerHTML = `<span class="text-amber"><i class="fa-solid fa-key"></i> براہ کرم نقشہ تلاش کے لیے نئی API Key درج کریں (Awaiting New API Key).</span>`;
+        resultBox.innerHTML = `<span class="text-amber"><i class="fa-solid fa-key"></i> براہ کرم نقشہ تلاش کے لیے API Key درج کریں۔</span>`;
       }
       if (window.App && window.App.showToast) {
         window.App.showToast('Please provide an API Key for Geocoding Search', 'warning');
@@ -179,56 +176,60 @@ window.GeoLocationModule = {
 
     if (resultBox) {
       resultBox.style.display = 'block';
-      resultBox.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Querying Geoapify Geocoding API for "${query}"...`;
+      resultBox.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Querying LocationIQ Geocoding API for "${query}"...`;
     }
 
-    const endpoint = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(query)}&apiKey=${this.apiKey}`;
+    const endpoint = `https://us1.locationiq.com/v1/search?key=${this.apiKey}&q=${encodeURIComponent(query)}&format=json`;
 
     fetch(endpoint)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+        return res.json();
+      })
       .then(data => {
-        if (data && data.features && data.features.length > 0) {
-          const first = data.features[0];
-          const lat = first.geometry.coordinates[1];
-          const lon = first.geometry.coordinates[0];
-          const properties = first.properties;
-          const formattedAddress = properties.formatted || query;
+        if (Array.isArray(data) && data.length > 0) {
+          const first = data[0];
+          const lat = parseFloat(first.lat);
+          const lon = parseFloat(first.lon);
+          const formattedAddress = first.display_name || query;
+          const address = first.address || {};
 
           // Clear previous pin
           this.layers.geoapifyPin.clearLayers();
 
-          // Create animated Geoapify Pin Marker
+          // Create animated LocationIQ Pin Marker
           const marker = L.marker([lat, lon], {
             icon: L.divIcon({
               className: 'geoapify-custom-pin',
-              html: `<div style="background:#00a8ff; width:20px; height:20px; border-radius:50%; border:3px solid #ffffff; box-shadow:0 0 16px #00a8ff;"></div>`
+              html: `<div style="background:#00d2d3; width:22px; height:22px; border-radius:50%; border:3px solid #ffffff; box-shadow:0 0 18px #00d2d3;"></div>`
             })
           });
 
           marker.bindPopup(`
-            <div style="color:#0f172a; font-family:sans-serif; min-width:240px;">
-              <div style="font-size:0.7rem; text-transform:uppercase; font-weight:700; color:#0056b3;">
-                <i class="fa-solid fa-location-dot"></i> Geocoded Target
+            <div style="color:#0f172a; font-family:sans-serif; min-width:250px;">
+              <div style="font-size:0.7rem; text-transform:uppercase; font-weight:700; color:#0984e3;">
+                <i class="fa-solid fa-location-crosshairs"></i> LocationIQ Target Found
               </div>
-              <h4 style="margin:4px 0; color:#0f172a; font-size:0.95rem;">${formattedAddress}</h4>
+              <h4 style="margin:5px 0; color:#0f172a; font-size:0.9rem; line-height:1.3;">${formattedAddress}</h4>
               <div style="font-size:0.8rem; margin-top:4px;"><b>Latitude:</b> ${lat.toFixed(5)}</div>
               <div style="font-size:0.8rem;"><b>Longitude:</b> ${lon.toFixed(5)}</div>
-              ${properties.country ? `<div style="font-size:0.8rem;"><b>Country:</b> ${properties.country}</div>` : ''}
-              ${properties.postcode ? `<div style="font-size:0.8rem;"><b>Postcode:</b> ${properties.postcode}</div>` : ''}
+              ${address.city || address.town ? `<div style="font-size:0.8rem;"><b>City:</b> ${address.city || address.town}</div>` : ''}
+              ${address.country ? `<div style="font-size:0.8rem;"><b>Country:</b> ${address.country}</div>` : ''}
+              ${address.postcode ? `<div style="font-size:0.8rem;"><b>Postcode:</b> ${address.postcode}</div>` : ''}
             </div>
           `).openPopup();
 
           this.layers.geoapifyPin.addLayer(marker);
 
           // Smooth fly-to animation
-          this.map.flyTo([lat, lon], 16, { duration: 1.5 });
+          this.map.flyTo([lat, lon], 15, { duration: 1.5 });
 
           if (resultBox) {
-            resultBox.innerHTML = `<i class="fa-solid fa-circle-check text-green"></i> Found Address: <strong>${formattedAddress}</strong> (${lat.toFixed(4)}, ${lon.toFixed(4)})`;
+            resultBox.innerHTML = `<i class="fa-solid fa-circle-check text-green"></i> Found: <strong>${formattedAddress}</strong> (${lat.toFixed(4)}, ${lon.toFixed(4)})`;
           }
 
           if (window.App && window.App.showToast) {
-            window.App.showToast(`Found: ${formattedAddress}`, 'success');
+            window.App.showToast(`LocationIQ Found: ${formattedAddress.split(',')[0]}`, 'success');
           }
         } else {
           if (resultBox) {
@@ -237,40 +238,44 @@ window.GeoLocationModule = {
         }
       })
       .catch(err => {
-        console.error('Geocoding Error:', err);
+        console.error('LocationIQ Error:', err);
         if (resultBox) {
-          resultBox.innerHTML = `<span class="text-red"><i class="fa-solid fa-triangle-exclamation"></i> Geocoding API Error. Check internet connection.</span>`;
+          resultBox.innerHTML = `<span class="text-red"><i class="fa-solid fa-triangle-exclamation"></i> LocationIQ API Error: ${err.message || 'Check request'}.</span>`;
         }
       });
   },
 
-  // Geoapify Reverse Geocoding API
+  // LocationIQ Reverse Geocoding API
   reverseGeocode: function(lat, lng) {
     if (!this.apiKey) return;
-    const endpoint = `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lng}&apiKey=${this.apiKey}`;
+    const endpoint = `https://us1.locationiq.com/v1/reverse?key=${this.apiKey}&lat=${lat}&lon=${lng}&format=json`;
 
     fetch(endpoint)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+        return res.json();
+      })
       .then(data => {
-        if (data && data.features && data.features.length > 0) {
-          const properties = data.features[0].properties;
-          const formatted = properties.formatted || `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+        if (data && (data.display_name || data.address)) {
+          const formatted = data.display_name || `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+          const address = data.address || {};
 
           L.popup()
             .setLatLng([lat, lng])
             .setContent(`
-              <div style="color:#0f172a; font-family:sans-serif;">
-                <div style="font-size:0.7rem; text-transform:uppercase; font-weight:700; color:#0056b3;">
-                  <i class="fa-solid fa-globe"></i> Location Details
+              <div style="color:#0f172a; font-family:sans-serif; min-width:220px;">
+                <div style="font-size:0.7rem; text-transform:uppercase; font-weight:700; color:#0984e3;">
+                  <i class="fa-solid fa-location-dot"></i> LocationIQ Reverse Geocode
                 </div>
-                <div style="font-size:0.85rem; font-weight:600; margin-top:2px;">${formatted}</div>
-                <div style="font-size:0.75rem; color:#64748b; margin-top:4px;">Coordinates: ${lat.toFixed(5)}, ${lng.toFixed(5)}</div>
+                <div style="font-size:0.85rem; font-weight:600; margin-top:3px; line-height:1.3;">${formatted}</div>
+                <div style="font-size:0.75rem; color:#64748b; margin-top:5px;">Coordinates: ${lat.toFixed(5)}, ${lng.toFixed(5)}</div>
+                ${address.city || address.country ? `<div style="font-size:0.75rem; color:#0369a1; font-weight:600;">${[address.city, address.country].filter(Boolean).join(', ')}</div>` : ''}
               </div>
             `)
             .openOn(this.map);
         }
       })
-      .catch(err => console.error('Reverse Geocode Error:', err));
+      .catch(err => console.error('LocationIQ Reverse Error:', err));
   },
 
   startPlayback: function() {

@@ -222,7 +222,7 @@ window.OverviewModule = {
 
     const apiKey = (window.GeoLocationModule && window.GeoLocationModule.apiKey) ? window.GeoLocationModule.apiKey : '';
     if (apiKey) {
-      L.tileLayer(`https://maps.geoapify.com/v1/tile/dark-matter-dark/{z}/{x}/{y}.png?apiKey=${apiKey}`, {
+      L.tileLayer(`https://tiles.locationiq.com/v3/dark/r/{z}/{x}/{y}.png?key=${apiKey}`, {
         maxZoom: 19
       }).addTo(this.previewMap);
     } else {

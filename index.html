@@ -562,24 +562,24 @@
         </div>
       </section>
 
-      <!-- VIEW 9: GEOLOCATION MAP (Integrated with Geoapify Geocoding API) -->
+      <!-- VIEW 9: GEOLOCATION MAP (Integrated with LocationIQ GIS & Geocoding Engine) -->
       <section id="view-geolocation" class="view-page">
         <div class="page-header">
           <div>
-            <h1 class="command-title"><i class="fa-solid fa-map-location-dot text-cyan-bright"></i> Geo-Location Map & Geoapify GIS Engine</h1>
-            <p class="command-subtitle">Interactive cell tower mapping, Geoapify geocoding search, and animated route playback</p>
+            <h1 class="command-title"><i class="fa-solid fa-map-location-dot text-cyan-bright"></i> Geo-Location Map & LocationIQ GIS Engine</h1>
+            <p class="command-subtitle">Interactive cell tower mapping, LocationIQ forward/reverse geocoding, and animated route playback</p>
           </div>
         </div>
 
-        <!-- Geoapify Geocoding API Search Bar -->
+        <!-- LocationIQ Geocoding API Search Bar -->
         <div class="cyber-card" style="margin-bottom: 0.75rem; padding: 0.75rem 1rem;">
           <div style="display:flex; gap:0.5rem; align-items:center;">
             <div style="flex:1; position:relative;">
               <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:0.8rem; top:50%; transform:translateY(-50%); color:var(--accent-blue-bright);"></i>
-              <input type="text" id="geoapify-search-input" class="form-control" value="38 Upper Montagu Street, Westminster W1H 1LJ, United Kingdom" placeholder="Geoapify API Address Search (e.g. 38 Upper Montagu Street, London or F-6 Islamabad)..." style="padding-left:2.5rem; width:100%;">
+              <input type="text" id="geoapify-search-input" class="form-control" value="Islamabad, Pakistan" placeholder="LocationIQ Address Search (e.g. Islamabad, Lahore, 38 Upper Montagu Street London)..." style="padding-left:2.5rem; width:100%;">
             </div>
             <button id="btn-geoapify-search" class="tool-btn primary">
-              <i class="fa-solid fa-location-crosshairs"></i> Geoapify Geocode
+              <i class="fa-solid fa-location-crosshairs"></i> LocationIQ Search
             </button>
           </div>
           <div id="geoapify-search-result" style="display:none; margin-top:0.5rem; font-size:0.825rem;" class="text-cyan-bright"></div>
