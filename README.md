@@ -40,6 +40,11 @@
 - **Geo-Location GIS Engine & Route Playback**: Interactive Leaflet map with cell tower markers, polyline movement routes, animated playback controls (1x, 2x, 5x, 10x speed), travel distance/time telemetry, and missing date calendar heatmap.
 - **i2-Style Link Analysis Diagram**: Vis-Network interactive target-to-contact node graph with clickable nodes opening a slide-over inspection drawer.
 - **Multi-CDR Cross Analysis**: Automated multi-target overlap finder for shared B-party contacts, shared IMEIs, cell towers, and co-locations.
+- **Data Backup, Restore & Reset Center**: 
+  - **Full JSON Backup Download**: Exports cases, CDR logs, targets, and stats in timestamped JSON format.
+  - **Backup Upload & Restoration**: Live file parser that validates and restores all cases and records into the active session and browser local storage.
+  - **Permanent Data Reset / Wipe**: One-click complete memory wipe with safety confirmation dialog.
+  - **Factory Demo Reload**: Instant restoration of initial demo cases and CDR logs for testing.
 - **Multi-Format Export Engine**: SheetJS multi-tab Excel workbook generator, PDF case dossiers, Google Earth KML route exporter, and PNG screenshot capture.
 
 ---
@@ -77,7 +82,8 @@ c:\Users\hp\Documents\CDR App\
         ├── geolocation.js     # Leaflet GIS map, route playback engine & calendar gap heatmap
         ├── link_analysis.js   # Vis-Network i2 node diagram & slide-over drawer
         ├── multi_cross.js     # Multi-target cross comparison engine
-        └── exporter.js        # Multi-tab Excel, PDF, CSV, KML & PNG export engine
+        ├── exporter.js        # Multi-tab Excel, PDF, CSV, KML & PNG export engine
+        └── backup_manager.js  # JSON backup exporter, live importer, and data reset engine
 ```
 
 ---
@@ -118,6 +124,11 @@ To take **ZEE CDR Forensic** to the next level of law-enforcement capabilities, 
 - **جی آئی ایس جیو لوکیشن اور اینیمیٹڈ روٹ پلے بیک**: Leaflet میپ بمعہ سیل ٹاورز، **1x تا 10x سپیڈ سے اینیمیٹڈ مشتبہ موومنٹ پلے بیک**، فاصلہ، اور Missing Date Switch-Off Calendar۔
 - **i2-سٹائل لنک انالیسس ڈایاگرام**: Vis-Network پر مبنی انٹرایکٹو نیٹ ورک ڈایاگرام جس پر کلک کرنے سے سلائیڈ پینل کھلتا ہے۔
 - **ملٹی سی ڈی آر کراس انالیسس**: متعدد مشتبہ افراد کا باہمی موازنہ اور مشترکہ بی پارٹی کنٹیکٹس و کو-لوکیشن کی خودکار شناخت۔
+- **ڈیٹا بیک اپ، اپلوڈ اور ریسیٹ سنٹر**:
+  - **فل بیک اپ ڈاؤنلوڈ**: تمام کیسز، سی ڈی آر ریکارڈز، لوکیشنز اور انٹیلی جنس کا ایک کلک پر جامع JSON بیک اپ حاصل کریں۔
+  - **بیک اپ اپلوڈ اور بحالی (Restore)**: سابقہ بیک اپ فائل کو ایپلیکیشن اور براؤزر کی لوکل اسٹوریج میں فوراً بحال کریں۔
+  - **مکمل ڈیٹا ریسیٹ (Wipe All Data)**: تصدیقی ڈائیلاگ کے ساتھ تمام ڈیٹا صاف اور ریسیٹ کرنے کی سہولت۔
+  - **ڈیمو ڈیٹا کی دوبارہ لوڈنگ**: ٹیسٹنگ کے لیے اصل فیکٹری ڈیمو ڈیٹا کو ایک کلک میں دوبارہ حاصل کریں۔
 - **ملٹی فارمیٹ ایکسپورٹ**: SheetJS ملٹی ٹیب ایکسل ورس شیٹ، پی ڈی ایف کیس رپورٹس، گوگل ارتھ KML روٹ فائل، اور PNG اسکرین شاٹ کپچر۔
 
 ---
@@ -173,6 +184,11 @@ To take **ZEE CDR Forensic** to the next level of law-enforcement capabilities, 
 - **مُحرك الخرائط الجغرافية GIS وتشغيل المسار**: خريطة Leaflet تفاعلية تظهر أبراج الاتصالات، مسارات الحركة، **تشغيل أنيميشن مسار المشتبه به بسرعات (1x, 2x, 5x, 10x)**، حساب المسافات، وتقويم التواريخ المفقودة.
 - **مخطط تحليل الروابط التفاعلي (أسلوب i2)**: رسم بياني تفاعلي من Vis-Network يربط الهدف بالأرقام والأجهزة مع لوحة تفاصيل منزلقة عند النقر.
 - **التحليل التقاطعي متعدد السجلات**: كشف تلقائي للأرقام المشتركة والأجهزة والأبراج المتداخلة والتواجد في نفس الموقع بين عدة مشتبه بهم.
+- **مركز النسخ الاحتياطي واستعادة وإعادة تعيين البيانات**:
+  - **تنزيل نسخة احتياطية كاملة (JSON)**: تصدير كافة القضايا وسجلات المكالمات والهويات والإحصائيات بملف JSON مختوم بالوقت.
+  - **رفع واستعادة النسخة الاحتياطية**: استيراد وتطبيق النسخ الاحتياطية فورياً وحفظها في التخزين المحلي للمتصفح.
+  - **مسح وإعادة تعيين البيانات بالكامل**: مسح فوري لكافة السجلات مع نافذة تأكيد أمنية لتجنب الحذف العرضي.
+  - **إعادة تحميل البيانات التجريبية المصنعية**: زر مخصص لاستعادة بيانات العرض الأصلية بنقرة واحدة لأغراض الاختبار.
 - **محرك التصدير متعدد الصيغ**: تصدير ملفات Excel متعددة الصفحات عبر SheetJS، تقارير PDF جنائية، ملفات مسار KML لـ Google Earth، والتقاط صور PNG.
 
 ---
