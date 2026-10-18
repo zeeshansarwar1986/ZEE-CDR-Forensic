@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    MODULE: GEO-LOCATION & MOVEMENT INTELLIGENCE
    Integrated with LocationIQ Geocoding API & High-Definition Dark Map Tiles
    API Key: pk.80bbc1c5ad114bb07d75f02cf8820cb0
@@ -7,6 +7,53 @@
 window.GeoLocationModule = {
   apiKey: 'pk.80bbc1c5ad114bb07d75f02cf8820cb0',
   map: null,
+  tileProviders: {
+    'osm': {
+      name: 'OpenStreetMap (OSM Standard)',
+      layer: L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors'
+      })
+    },
+    'google-sat': {
+      name: 'Google Maps Satellite',
+      layer: L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        attribution: '&copy; Google Maps Satellite'
+      })
+    },
+    'google-road': {
+      name: 'Google Maps Street Roadmap',
+      layer: L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        attribution: '&copy; Google Maps'
+      })
+    },
+    'locationiq': {
+      name: 'LocationIQ Dark Forensic GIS',
+      layer: L.tileLayer('https://tiles.locationiq.com/v3/dark/r/{z}/{x}/{y}.png?key=pk.80bbc1c5ad114bb07d75f02cf8820cb0', {
+        maxZoom: 19,
+        attribution: '&copy; LocationIQ | &copy; OpenStreetMap contributors'
+      })
+    },
+    'esri': {
+      name: 'Esri World Satellite Imagery',
+      layer: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 19,
+        attribution: '&copy; Esri World Imagery'
+      })
+    },
+    'bts': {
+      name: 'BTS Cellular Tower Grid',
+      layer: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        maxZoom: 19,
+        attribution: '&copy; CartoDB & BTS Cellular Grid'
+      })
+    }
+  },
+  currentProvider: 'osm',
+  activeTileLayer: null,
+  sampleSnippetMarker: null,
   layers: {
     towers: L.layerGroup(),
     routes: L.layerGroup(),
@@ -48,12 +95,9 @@ window.GeoLocationModule = {
     // Default view centered on Islamabad / Rawalpindi sector
     this.map = L.map('gis-map').setView([33.6844, 73.0479], 12);
 
-    // LocationIQ Dark Mode Tile Layer
-    const tileUrl = `https://tiles.locationiq.com/v3/dark/r/{z}/{x}/{y}.png?key=${this.apiKey}`;
-    L.tileLayer(tileUrl, {
-      maxZoom: 19,
-      attribution: 'Powered by <a href="https://locationiq.com/" target="_blank">LocationIQ</a> | &copy; OpenStreetMap contributors'
-    }).addTo(this.map);
+    // Default to OpenStreetMap (User requested Leaflet snippet!)
+    this.activeTileLayer = this.tileProviders['osm'].layer;
+    this.activeTileLayer.addTo(this.map);
 
     this.layers.towers.addTo(this.map);
     this.layers.routes.addTo(this.map);
@@ -71,8 +115,15 @@ window.GeoLocationModule = {
     this.layers.towers.clearLayers();
     this.layers.routes.clearLayers();
 
-    const records = window.CDRDataStore.cdrRecords || [];
-    if (!records || records.length === 0) return;
+    const records = (window.CDRDataStore && window.CDRDataStore.cdrRecords) ? window.CDRDataStore.cdrRecords : [];
+    if (!records || records.length === 0) {
+      if (!this.sampleSnippetMarker) {
+        this.sampleSnippetMarker = L.marker([51.5, -0.09]).addTo(this.map)
+          .bindPopup('<b>A pretty CSS popup.</b><br> Easily customizable.<br><small style=\"color:#00a8ff;\">OpenStreetMap Active</small>')
+          .openPopup();
+      }
+      return;
+    }
 
     // Group by location/cellId
     const locationMap = {};
@@ -143,9 +194,45 @@ window.GeoLocationModule = {
     }
   },
 
+  switchProvider: function(providerKey) {
+    if (!this.tileProviders[providerKey] || !this.map) return;
+    if (this.activeTileLayer) {
+      this.map.removeLayer(this.activeTileLayer);
+    }
+    this.currentProvider = providerKey;
+    this.activeTileLayer = this.tileProviders[providerKey].layer;
+    this.activeTileLayer.addTo(this.map);
+
+    this.layers.towers.bringToFront();
+    this.layers.routes.bringToFront();
+    this.layers.geoapifyPin.bringToFront();
+
+    document.querySelectorAll('.inapp-api-tab').forEach(btn => {
+      if (btn.getAttribute('data-provider') === providerKey) {
+        btn.classList.add('primary');
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('primary');
+        btn.classList.remove('active');
+      }
+    });
+
+    if (window.App && window.App.showToast) {
+      window.App.showToast('Active Map API: ' + this.tileProviders[providerKey].name, 'info');
+    }
+  },
+
   bindEvents: function() {
     if (this.eventsBound) return;
     this.eventsBound = true;
+
+    // Multi-API in-app tabs
+    document.querySelectorAll('.inapp-api-tab').forEach(btn => {
+      btn.onclick = () => {
+        const prov = btn.getAttribute('data-provider');
+        this.switchProvider(prov);
+      };
+    });
 
     const playBtn = document.getElementById('btn-playback-play');
     if (playBtn) playBtn.onclick = () => this.startPlayback();

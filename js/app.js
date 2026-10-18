@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    MAIN APPLICATION CONTROLLER, ROUTER & CDR INGESTION ENGINE
    ZEE CDR FORENSIC - Zee Meta Advertising Agency (Reg)
    ========================================================================== */
@@ -83,6 +83,12 @@ window.App = {
         break;
       case 'view-exporter':
         if (window.ExporterModule) window.ExporterModule.init();
+        break;
+      case 'view-settings':
+        if (window.SettingsModule) window.SettingsModule.init();
+        break;
+      case 'view-useful-links':
+        this.showToast('Useful Forensic Portals & Verification Directory', 'info');
         break;
       case 'view-about':
         this.showToast('Zee Meta Advertising Agency Profile & Contact Info', 'info');

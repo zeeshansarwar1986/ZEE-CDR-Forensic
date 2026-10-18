@@ -1,4 +1,4 @@
-@echo off
+﻿@echo off
 title Push ZEE CDR Forensic to GitHub
 echo ========================================================
 echo  ZEE CDR Forensic - GitHub Push Utility
@@ -12,7 +12,7 @@ echo Staging any modified files...
 git add -A
 
 echo Committing changes...
-git commit -m "Update ZEE CDR Forensic with LocationIQ GIS Engine and Geocoding API" --allow-empty
+git commit -m "Add Multi-API Geolocation Workspace Tab with OpenStreetMap Leaflet Code, Google Satellite, and LocationIQ" --allow-empty
 
 echo Setting main branch...
 git branch -M main

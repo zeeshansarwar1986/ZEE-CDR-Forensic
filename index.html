@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -197,7 +197,7 @@
         <span id="live-header-clock">Sun, Jun 14 12:34:57 PM PKT</span>
       </div>
 
-      <button id="btn-quick-new-case" class="tool-btn primary" title="Quick Register New Case Docket" onclick="document.getElementById('modal-add-case').classList.add('active');" style="font-weight:600;">
+      <button id="btn-quick-new-case" class="tool-btn primary" title="Quick Register New Case Docket" onclick="window.CasesModule ? window.CasesModule.openModal() : document.getElementById('modal-add-case').classList.add('active');" style="font-weight:600;">
         <i class="fa-solid fa-folder-plus"></i>
         <span>New Case</span>
       </button>
@@ -237,7 +237,7 @@
         <i class="fa-solid fa-chart-line"></i>
         <span>Graphical Analytics</span>
       </div>
-      <div class="nav-item" id="nav-add-case-side" onclick="document.getElementById('modal-add-case').classList.add('active');">
+      <div class="nav-item" id="nav-add-case-side" onclick="window.CasesModule ? window.CasesModule.openModal() : document.getElementById('modal-add-case').classList.add('active');">
         <i class="fa-solid fa-circle-plus"></i>
         <span>Add New Case</span>
       </div>
@@ -273,7 +273,10 @@
         <i class="fa-solid fa-database"></i>
         <span>Add Intelligence DB</span>
       </div>
-      <div class="nav-item" id="nav-geolocation" data-view="view-geolocation">
+      <div class="nav-item" id="nav-geolocation" data-view="view-geolocation" onclick="window.open('map_workspace.html', '_blank');">
+        <i class="fa-solid fa-map-location-dot"></i>
+        <span>Geo-Location Map</span>
+        <span style="margin-left:auto; font-size:0.65rem; background:rgba(0,168,255,0.2); color:#00a8ff; padding:2px 6px; border-radius:4px; border:1px solid rgba(0,168,255,0.4);" title="کلک کرنے پر الگ ٹیب میں میپ اوپن ہوگا">↗ الگ ٹیب</span>
         <i class="fa-solid fa-map-location-dot"></i>
         <span>Geo-Location Map</span>
       </div>
@@ -282,10 +285,22 @@
         <span>Link Analysis</span>
       </div>
       
-      <!-- New Sidebar Item: About Agency (Requested by User) -->
+      <!-- Useful Links (Matching Screenshot 2) -->
+      <div class="nav-item" id="nav-useful-links" data-view="view-useful-links">
+        <i class="fa-solid fa-link"></i>
+        <span>Useful Links</span>
+      </div>
+
+      <!-- Settings (Requested by User) -->
+      <div class="nav-item" id="nav-settings" data-view="view-settings">
+        <i class="fa-solid fa-gear"></i>
+        <span>Settings</span>
+      </div>
+
+      <!-- About & Support (Matching Screenshot 2) -->
       <div class="nav-item" id="nav-about-agency" data-view="view-about">
         <i class="fa-solid fa-circle-info"></i>
-        <span>About Agency & Contact</span>
+        <span>About & Support</span>
       </div>
 
       <!-- Backup, Restore & Reset Data -->
@@ -384,7 +399,7 @@
             </div>
           </div>
 
-          <div class="action-card-box" onclick="document.getElementById('modal-add-case').classList.add('active');">
+          <div class="action-card-box" onclick="window.CasesModule ? window.CasesModule.openModal() : document.getElementById('modal-add-case').classList.add('active');">
             <div class="action-card-icon"><i class="fa-solid fa-circle-plus"></i></div>
             <div>
               <div class="action-card-title">Add New Case <i class="fa-solid fa-arrow-right" style="font-size:0.8rem; color:var(--accent-blue-bright);"></i></div>
@@ -626,43 +641,85 @@
         </div>
       </section>
 
-      <!-- VIEW 3: CASE MANAGEMENT -->
+      <!-- VIEW 3: CASE MANAGEMENT (100% Matching Screenshot 2) -->
       <section id="view-cases" class="view-page">
-        <div class="page-header">
-          <div>
-            <h1 class="command-title"><i class="fa-solid fa-folder-open text-cyan-bright"></i> View All Cases</h1>
-            <p class="command-subtitle">Search, filter & open case workspaces</p>
+        <div class="view-cases-top-header">
+          <div class="view-cases-title-group">
+            <h1 class="view-cases-title"><i class="fa-solid fa-folder-open text-cyan-bright" style="margin-right:8px;"></i>View Cases</h1>
+            <p class="view-cases-subtitle" id="cases-count-subtitle">0 case(s), table or card view</p>
           </div>
-          <button class="tool-btn primary" onclick="document.getElementById('modal-add-case').classList.add('active');">
-            <i class="fa-solid fa-plus"></i> Add New Case
-          </button>
+          <div class="view-cases-actions-group">
+            <button class="case-header-btn" id="btn-export-cases-csv" title="Export cases to CSV">
+              <i class="fa-solid fa-download"></i> CSV
+            </button>
+            <button class="case-header-btn" id="btn-print-cases" title="Print Case Register">
+              <i class="fa-solid fa-print"></i> Print
+            </button>
+            <div class="view-mode-toggle-group">
+              <button class="view-mode-btn active" id="btn-cases-view-table" title="Table View">
+                <i class="fa-solid fa-list-ul"></i>
+              </button>
+              <button class="view-mode-btn" id="btn-cases-view-cards" title="Card View">
+                <i class="fa-solid fa-table-cells-large"></i>
+              </button>
+            </div>
+            <button class="tool-btn primary" id="btn-view-cases-add-new" onclick="window.CasesModule ? window.CasesModule.openModal() : null;" style="padding: 0.5rem 1rem;">
+              <i class="fa-solid fa-plus"></i> Add New Case
+            </button>
+          </div>
         </div>
 
-        <div class="cyber-card">
-          <div class="card-header">
-            <div class="card-title"><i class="fa-solid fa-list"></i> Registered Case Directory</div>
-            <input type="text" id="search-cases-input" class="form-control" placeholder="Search case title, IO, station..." style="width:260px;">
+        <!-- Search, Status Filter & Sorting Toolbar -->
+        <div class="cases-filter-toolbar">
+          <div class="case-search-wrapper">
+            <i class="fa-solid fa-magnifying-glass case-search-icon"></i>
+            <input type="text" id="search-cases-input" class="case-search-input" placeholder="Search by title, case ID, IO, status...">
           </div>
-          <div class="table-responsive">
-            <table class="cyber-table">
-              <thead>
-                <tr>
-                  <th>Case #</th>
-                  <th>Case Title</th>
-                  <th>Offence Category</th>
-                  <th>Police Station</th>
-                  <th>Investigating Officer</th>
-                  <th>Status</th>
-                  <th>Updated</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="cases-table-body"></tbody>
-            </table>
+          <div class="cases-filter-dropdowns">
+            <div class="case-select-wrapper">
+              <select id="filter-case-status" class="case-toolbar-select">
+                <option value="all" selected>All Status</option>
+                <option value="Active">Active</option>
+                <option value="Pending">Pending</option>
+                <option value="Completed">Completed</option>
+                <option value="Closed">Closed</option>
+              </select>
+              <i class="fa-solid fa-chevron-down case-select-arrow"></i>
+            </div>
+            <div class="case-select-wrapper">
+              <select id="sort-cases" class="case-toolbar-select">
+                <option value="updated" selected>Sort: Last Updated</option>
+                <option value="newest">Sort: Newest</option>
+                <option value="oldest">Sort: Oldest</option>
+                <option value="title">Sort: Title (A-Z)</option>
+                <option value="cdrs">Sort: Most CDRs</option>
+              </select>
+              <i class="fa-solid fa-chevron-down case-select-arrow"></i>
+            </div>
           </div>
         </div>
+
+        <!-- Table View Container -->
+        <div class="cases-table-container" id="cases-table-container">
+          <table class="cases-forensic-table">
+            <thead>
+              <tr>
+                <th>Case ID</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>CDRs</th>
+                <th>IO</th>
+                <th>Updated</th>
+                <th style="text-align: right; padding-right: 20px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="cases-table-body"></tbody>
+          </table>
+        </div>
+
+        <!-- Card / Grid View Container -->
+        <div class="cases-cards-container" id="cases-cards-container" style="display: none;"></div>
       </section>
-
       <!-- VIEW 4: CDR INGESTION -->
       <section id="view-upload" class="view-page">
         <div class="page-header">
@@ -904,12 +961,44 @@
         </div>
       </section>
 
-      <!-- VIEW 9: GEOLOCATION MAP (Integrated with LocationIQ GIS & Geocoding Engine) -->
+      <!-- VIEW 9: GEOLOCATION MAP (Integrated with Multi-API GIS Workspace) -->
       <section id="view-geolocation" class="view-page">
-        <div class="page-header">
+        <div class="page-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
           <div>
-            <h1 class="command-title"><i class="fa-solid fa-map-location-dot text-cyan-bright"></i> Geo-Location Map & LocationIQ GIS Engine</h1>
-            <p class="command-subtitle">Interactive cell tower mapping, LocationIQ forward/reverse geocoding, and animated route playback</p>
+            <h1 class="command-title"><i class="fa-solid fa-map-location-dot text-cyan-bright"></i> Geo-Location Map & Multi-API GIS Workspace</h1>
+            <p class="command-subtitle">ہر میپ اے پی آئی کیلئے الگ الگ ٹیب (OpenStreetMap, Google Satellite, LocationIQ, Esri, BTS Towers)</p>
+          </div>
+          <button type="button" onclick="window.open('map_workspace.html', '_blank')" class="tool-btn primary" style="padding:0.65rem 1.25rem; font-size:0.875rem; font-weight:700; box-shadow:0 0 16px rgba(0, 168, 255, 0.45); cursor:pointer;">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> الگ ٹیب میں فل سکرین میپ کھولیں (Open in New Tab)
+          </button>
+        </div>
+
+        <!-- In-App Multi-API Provider Tabs Bar -->
+        <div class="cyber-card" style="margin-bottom: 0.75rem; padding: 0.6rem 0.85rem;">
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.6rem;">
+            <div style="font-size:0.825rem; font-weight:700; color:var(--accent-cyan); display:flex; align-items:center; gap:0.4rem;">
+              <i class="fa-solid fa-layer-group"></i> میپ اے پی آئی سلیکٹر (Map APIs):
+            </div>
+            <div style="display:flex; gap:0.35rem; flex-wrap:wrap;" id="inapp-map-api-tabs">
+              <button type="button" class="tool-btn inapp-api-tab primary active" data-provider="osm" style="font-size:0.775rem;">
+                <i class="fa-solid fa-map"></i> OpenStreetMap (OSM)
+              </button>
+              <button type="button" class="tool-btn inapp-api-tab" data-provider="google-sat" style="font-size:0.775rem;">
+                <i class="fa-solid fa-satellite"></i> Google Satellite
+              </button>
+              <button type="button" class="tool-btn inapp-api-tab" data-provider="google-road" style="font-size:0.775rem;">
+                <i class="fa-solid fa-road"></i> Google Roadmap
+              </button>
+              <button type="button" class="tool-btn inapp-api-tab" data-provider="locationiq" style="font-size:0.775rem;">
+                <i class="fa-solid fa-moon"></i> LocationIQ Dark GIS
+              </button>
+              <button type="button" class="tool-btn inapp-api-tab" data-provider="esri" style="font-size:0.775rem;">
+                <i class="fa-solid fa-globe"></i> Esri World Imagery
+              </button>
+              <button type="button" class="tool-btn inapp-api-tab" data-provider="bts" style="font-size:0.775rem;">
+                <i class="fa-solid fa-tower-cell"></i> BTS Cellular Grid
+              </button>
+            </div>
           </div>
         </div>
 
@@ -1071,30 +1160,100 @@
     </div>
   </div>
 
-  <!-- Modal: Add New Case -->
+  <!-- Modal: Add New Case (Matching Forensic UI Screenshot) -->
   <div class="modal-overlay" id="modal-add-case">
-    <div class="cyber-modal">
-      <div class="modal-header">
-        <div class="card-title text-cyan-bright"><i class="fa-solid fa-circle-plus"></i> Register New Case</div>
-        <button class="tool-btn" onclick="document.getElementById('modal-add-case').classList.remove('active');"><i class="fa-solid fa-xmark"></i></button>
+    <div class="case-dialog-modal">
+      <div class="case-modal-header">
+        <div class="case-modal-title-group">
+          <h3 class="case-modal-title">Add new case</h3>
+          <p class="case-modal-subtitle">Register a forensic investigation case</p>
+        </div>
+        <button type="button" class="case-modal-close" id="btn-close-case-modal" onclick="window.CasesModule ? window.CasesModule.closeModal() : document.getElementById('modal-add-case').classList.remove('active');" aria-label="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
       </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label class="form-label">Case # / FIR #</label>
-          <input type="text" id="new-case-num" class="form-control" placeholder="CR-2026-9900">
+
+      <div class="case-modal-body">
+        <div class="case-modal-row">
+          <div class="case-modal-col">
+            <label class="case-modal-label" for="new-case-num">Case ID <span class="case-req-star">*</span></label>
+            <input type="text" id="new-case-num" class="case-modal-input" placeholder="CASE-2025-001" value="CASE-2025-001" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="case-modal-col">
+            <label class="case-modal-label" for="new-case-title">Case name <span class="case-req-star">*</span></label>
+            <input type="text" id="new-case-title" class="case-modal-input" placeholder="Case title" autocomplete="off">
+          </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Case Title</label>
-          <input type="text" id="new-case-title" class="form-control" placeholder="Demolition / Targeted Homicide">
+
+        <div class="case-modal-row">
+          <div class="case-modal-col">
+            <label class="case-modal-label" for="new-case-type">Case type</label>
+            <div class="case-select-wrapper">
+              <select id="new-case-type" class="case-modal-select">
+                <option value="Murder" selected>Murder</option>
+                <option value="Kidnapping">Kidnapping</option>
+                <option value="Robbery">Robbery</option>
+                <option value="Terrorism">Terrorism</option>
+                <option value="Cybercrime">Cybercrime</option>
+                <option value="Narcotics">Narcotics</option>
+                <option value="Fraud">Fraud</option>
+                <option value="Missing Person">Missing Person</option>
+                <option value="Extortion">Extortion</option>
+                <option value="Other">Other</option>
+              </select>
+              <i class="fa-solid fa-chevron-down case-select-arrow"></i>
+            </div>
+          </div>
+          <div class="case-modal-col">
+            <label class="case-modal-label" for="new-case-ps">Police station</label>
+            <input type="text" id="new-case-ps" class="case-modal-input" placeholder="" autocomplete="off">
+          </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Investigating Officer</label>
-          <input type="text" id="new-case-io" class="form-control" placeholder="Inspector Imran Khan">
+
+        <div class="case-modal-group">
+          <label class="case-modal-label" for="new-case-io">Investigator name</label>
+          <input type="text" id="new-case-io" class="case-modal-input" placeholder="" autocomplete="off">
+        </div>
+
+        <div class="case-modal-group">
+          <label class="case-modal-label" for="new-case-desc">Description</label>
+          <textarea id="new-case-desc" class="case-modal-textarea" rows="3" placeholder=""></textarea>
+        </div>
+
+        <div class="case-modal-group">
+          <label class="case-modal-label" for="new-case-status">Status</label>
+          <div class="case-select-wrapper">
+            <select id="new-case-status" class="case-modal-select">
+              <option value="Active">Active</option>
+              <option value="Pending" selected>Pending</option>
+              <option value="Completed">Completed</option>
+              <option value="Closed">Closed</option>
+            </select>
+            <i class="fa-solid fa-chevron-down case-select-arrow"></i>
+          </div>
+        </div>
+
+        <div class="case-modal-group">
+          <label class="case-modal-label">Attach FIR Copy (PDF, Image, Scan)</label>
+          <div class="fir-upload-box" id="fir-upload-box">
+            <input type="file" id="case-fir-input" accept=".pdf,image/*,.doc,.docx" style="display:none;">
+            <div class="fir-upload-prompt" id="fir-upload-prompt" onclick="document.getElementById('case-fir-input').click();">
+              <i class="fa-solid fa-paperclip text-cyan-bright" style="font-size:1.1rem;"></i>
+              <span>Click to attach FIR copy (PDF, PNG, JPG)</span>
+            </div>
+            <div id="fir-attached-preview" class="fir-attached-chip" style="display:none;">
+              <span id="fir-attached-name" class="font-mono text-cyan-bright"></span>
+              <button type="button" onclick="window.CasesModule.removeStagedFir('add')" style="background:none; border:none; color:#ef4444; cursor:pointer;" title="Remove FIR"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="tool-btn" onclick="document.getElementById('modal-add-case').classList.remove('active');">Cancel</button>
-        <button class="tool-btn primary" id="btn-save-new-case">Save Case</button>
+
+      <div class="case-modal-footer">
+        <button type="button" class="case-btn-cancel" id="btn-cancel-case-modal" onclick="window.CasesModule ? window.CasesModule.closeModal() : document.getElementById('modal-add-case').classList.remove('active');">Cancel</button>
+        <button type="button" class="case-btn-save" id="btn-save-new-case" onclick="window.CasesModule ? window.CasesModule.saveNewCase() : null;">
+          <i class="fa-solid fa-floppy-disk"></i> Save case
+        </button>
       </div>
     </div>
   </div>
@@ -1211,6 +1370,7 @@
   <script src="js/data.js"></script>
   <script src="js/modules/overview.js"></script>
   <script src="js/modules/cases.js"></script>
+  <script src="js/modules/settings.js"></script>
   <script src="js/modules/advance_cdr.js"></script>
   <script src="js/modules/graphical_analysis.js"></script>
   <script src="js/modules/raw_cdr.js"></script>

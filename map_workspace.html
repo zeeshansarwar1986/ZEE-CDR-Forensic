@@ -1,0 +1,696 @@
+﻿<!DOCTYPE html>
+<html lang="ur" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZEE CDR Forensic - Geo-Location & Multi-API Map Workspace</title>
+  
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Leaflet GIS Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  
+  <style>
+    :root {
+      --bg-dark: #040c1a;
+      --bg-header: #081426;
+      --bg-card: #0b1c33;
+      --accent-blue: #007bff;
+      --accent-cyan: #00a8ff;
+      --accent-green: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-red: #ef4444;
+      --border-color: rgba(0, 168, 255, 0.25);
+      --font-main: 'Inter', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-dark);
+      color: #f8fafc;
+      font-family: var(--font-main);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navigation Toolbar */
+    .map-header {
+      background: var(--bg-header);
+      border-bottom: 1px solid var(--border-color);
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.25rem;
+      gap: 1rem;
+      z-index: 1000;
+      flex-shrink: 0;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #0056b3, #00a8ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      color: #fff;
+      box-shadow: 0 0 12px rgba(0, 168, 255, 0.4);
+    }
+
+    .brand-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+
+    .brand-sub {
+      font-size: 0.725rem;
+      color: var(--accent-cyan);
+    }
+
+    /* API Provider Tabs Bar */
+    .api-tabs-container {
+      display: flex;
+      align-items: center;
+      background: #030914;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 4px;
+      overflow-x: auto;
+    }
+
+    .api-tab-btn {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.825rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      white-space: nowrap;
+      transition: all 0.18s ease;
+    }
+
+    .api-tab-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .api-tab-btn.active {
+      background: linear-gradient(135deg, #0066cc, #00a8ff);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0, 168, 255, 0.35);
+    }
+
+    /* Actions Right */
+    .map-tools-right {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .search-input-wrapper {
+      position: relative;
+      width: 260px;
+    }
+
+    .search-input-wrapper input {
+      width: 100%;
+      background: #030a16;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0.45rem 0.75rem 0.45rem 2.2rem;
+      color: #fff;
+      font-size: 0.825rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-input-wrapper input:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 2px rgba(0, 168, 255, 0.25);
+    }
+
+    .search-input-wrapper i {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+      font-size: 0.8rem;
+    }
+
+    .tool-btn {
+      background: #0b1e36;
+      border: 1px solid var(--border-color);
+      color: #cbd5e1;
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.15s;
+    }
+
+    .tool-btn:hover {
+      background: #122b4d;
+      color: #fff;
+      border-color: var(--accent-cyan);
+    }
+
+    .tool-btn.primary {
+      background: linear-gradient(135deg, #0056b3, #00a8ff);
+      border: none;
+      color: #fff;
+    }
+
+    /* The Map Canvas */
+    #map {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      background: #040c1a;
+      z-index: 1;
+    }
+
+    /* Floating Map HUD Info Box */
+    .map-hud-box {
+      position: absolute;
+      bottom: 24px;
+      left: 24px;
+      z-index: 1000;
+      background: rgba(8, 20, 38, 0.92);
+      border: 1px solid var(--border-color);
+      backdrop-filter: blur(8px);
+      border-radius: 10px;
+      padding: 0.85rem 1.25rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      font-size: 0.8rem;
+      max-width: 340px;
+    }
+
+    .hud-header {
+      font-weight: 700;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .hud-content {
+      color: #cbd5e1;
+      line-height: 1.4;
+    }
+
+    .hud-coords {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent-amber);
+    }
+
+    /* Floating Preset Locators */
+    .preset-locators {
+      position: absolute;
+      top: 80px;
+      right: 24px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .preset-btn {
+      background: rgba(8, 20, 38, 0.9);
+      border: 1px solid var(--border-color);
+      color: #cbd5e1;
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(6px);
+      transition: all 0.15s;
+    }
+
+    .preset-btn:hover {
+      background: #007bff;
+      color: #fff;
+      border-color: #00a8ff;
+    }
+
+    /* Custom Popup Styles */
+    .leaflet-popup-content-wrapper {
+      background: #08162b !important;
+      color: #f8fafc !important;
+      border: 1px solid var(--border-color) !important;
+      border-radius: 10px !important;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8) !important;
+      font-family: var(--font-main) !important;
+    }
+
+    .leaflet-popup-tip {
+      background: #08162b !important;
+      border: 1px solid var(--border-color) !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar with Multi-API Tabs -->
+  <header class="map-header">
+    <div class="brand-group">
+      <div class="brand-badge"><i class="fa-solid fa-map-location-dot"></i></div>
+      <div>
+        <div class="brand-title">ZEE CDR Forensic GIS</div>
+        <div class="brand-sub">Multi-API Satellite & BTS Workspace</div>
+      </div>
+    </div>
+
+    <!-- Multi-API Tabs (Each API has its own separate tab as requested!) -->
+    <div class="api-tabs-container">
+      <button class="api-tab-btn active" id="tab-api-osm" data-provider="osm">
+        <i class="fa-solid fa-map"></i> OpenStreetMap (OSM)
+      </button>
+      <button class="api-tab-btn" id="tab-api-google-sat" data-provider="google-sat">
+        <i class="fa-solid fa-satellite"></i> Google Satellite
+      </button>
+      <button class="api-tab-btn" id="tab-api-google-road" data-provider="google-road">
+        <i class="fa-solid fa-road"></i> Google Roadmap
+      </button>
+      <button class="api-tab-btn" id="tab-api-locationiq" data-provider="locationiq">
+        <i class="fa-solid fa-moon"></i> LocationIQ Dark GIS
+      </button>
+      <button class="api-tab-btn" id="tab-api-esri" data-provider="esri">
+        <i class="fa-solid fa-globe"></i> Esri World Imagery
+      </button>
+      <button class="api-tab-btn" id="tab-api-bts" data-provider="bts">
+        <i class="fa-solid fa-tower-cell"></i> BTS Cellular Towers
+      </button>
+    </div>
+
+    <!-- Action Tools Right -->
+    <div class="map-tools-right">
+      <div class="search-input-wrapper">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="map-search-input" placeholder="Search city or Lat,Lng...">
+      </div>
+      <button class="tool-btn" id="btn-search-exec" title="Search Location"><i class="fa-solid fa-arrow-right"></i></button>
+      <button class="tool-btn" id="btn-draw-marker" title="Add Forensic Marker"><i class="fa-solid fa-location-dot text-cyan"></i> Pin</button>
+      <button class="tool-btn" id="btn-print-map" title="Print Map"><i class="fa-solid fa-print"></i></button>
+      <button class="tool-btn" id="btn-show-code" title="View Leaflet Snippet Code" onclick="toggleCodeModal(true)"><i class="fa-solid fa-code" style="color:#f59e0b;"></i> کوڈ دیکھیں</button>
+      <button class="tool-btn primary" onclick="window.close(); if(!window.closed) window.location.href='index.html';">
+        <i class="fa-solid fa-house"></i> Main App
+      </button>
+    </div>
+  </header>
+
+  <!-- Leaflet Map Canvas (ID='map' exactly matching user's code snippet!) -->
+  <div id="map"></div>
+
+  <!-- Floating HUD Panel -->
+  <div class="map-hud-box">
+    <div class="hud-header">
+      <i class="fa-solid fa-circle-nodes"></i>
+      <span id="hud-provider-title">OpenStreetMap Standard API</span>
+    </div>
+    <div class="hud-content" id="hud-desc-text">
+      Tile Layer: tile.openstreetmap.org<br>
+      Interactive forensic coordinate triangulation & marker engine.
+    </div>
+    <div class="hud-coords" id="hud-coords-text">
+      Lat: 51.505000 • Lng: -0.090000 • Zoom: 13
+    </div>
+  </div>
+
+  <!-- Floating Quick Locators -->
+  <div class="preset-locators">
+    <button class="preset-btn" onclick="moveTo(51.505, -0.09, 13, 'London Demo Location')">
+      🇬🇧 London [51.505, -0.09]
+    </button>
+    <button class="preset-btn" onclick="moveTo(33.6844, 73.0479, 13, 'Islamabad Central Tower')">
+      🇵🇰 Islamabad [33.68, 73.04]
+    </button>
+    <button class="preset-btn" onclick="moveTo(31.5204, 74.3587, 13, 'Lahore Crime Sector')">
+      🇵🇰 Lahore [31.52, 74.35]
+    </button>
+    <button class="preset-btn" onclick="moveTo(24.8607, 67.0011, 13, 'Karachi Port Sector')">
+      🇵🇰 Karachi [24.86, 67.00]
+    </button>
+  </div>
+
+  <!-- Leaflet GIS JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    // =========================================================================
+    // Multi-API Map Engine & Tile Providers
+    // =========================================================================
+    
+    // 1. Initialize Map with user's exact coordinates [51.505, -0.09]
+    var map = L.map('map').setView([51.505, -0.09], 13);
+
+    // Multi-API Tile Layer Definitions
+    var tileProviders = {
+      // 1. OpenStreetMap (Exact snippet provided by User!)
+      'osm': {
+        name: 'OpenStreetMap (OSM Standard API)',
+        desc: 'Tile Layer: https://tile.openstreetmap.org/{z}/{x}/{y}.png<br>Open-source global street mapping.',
+        layer: L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        })
+      },
+      // 2. Google Maps Satellite Hybrid
+      'google-sat': {
+        name: 'Google Maps Satellite Hybrid API',
+        desc: 'High-resolution Google Satellite imagery with road networks and borders.',
+        layer: L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+          maxZoom: 20,
+          attribution: '&copy; Google Maps Satellite'
+        })
+      },
+      // 3. Google Maps Roadmap
+      'google-road': {
+        name: 'Google Maps Street Roadmap API',
+        desc: 'Official Google Maps standard vector street cartography.',
+        layer: L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+          maxZoom: 20,
+          attribution: '&copy; Google Maps'
+        })
+      },
+      // 4. LocationIQ Dark Forensic GIS
+      'locationiq': {
+        name: 'LocationIQ Dark Forensic GIS API',
+        desc: 'Sleek dark theme optimized for BTS cell towers & night surveillance.',
+        layer: L.tileLayer('https://tiles.locationiq.com/v3/dark/r/{z}/{x}/{y}.png?key=pk.80bbc1c5ad114bb07d75f02cf8820cb0', {
+          maxZoom: 19,
+          attribution: '&copy; LocationIQ | &copy; OpenStreetMap contributors'
+        })
+      },
+      // 5. Esri World Imagery
+      'esri': {
+        name: 'Esri World Satellite Imagery API',
+        desc: 'High-definition global satellite reconnaissance by ArcGIS Esri.',
+        layer: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+          maxZoom: 19,
+          attribution: '&copy; Esri World Imagery'
+        })
+      },
+      // 6. OpenCellID BTS Towers (Carto Dark with cellular tower grid)
+      'bts': {
+        name: 'BTS Cellular Tower Triangulation API',
+        desc: 'Cell tower sectors, azimuth beams, and suspect movement radius.',
+        layer: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+          maxZoom: 19,
+          attribution: '&copy; CartoDB & OpenCellID'
+        })
+      }
+    };
+
+    var currentProviderKey = 'osm';
+    var activeTileLayer = tileProviders['osm'].layer;
+    activeTileLayer.addTo(map);
+
+    // Initial Marker (Exact code snippet from user!)
+    var sampleMarker = L.marker([51.5, -0.09]).addTo(map)
+      .bindPopup('<b>A pretty CSS popup.</b><br>Easily customizable.<br><small style="color:#00a8ff;">Initial Forensic Marker</small>')
+      .openPopup();
+
+    // Additional Layers Group
+    var markersGroup = L.layerGroup().addTo(map);
+    var towersGroup = L.layerGroup().addTo(map);
+    var routeGroup = L.layerGroup().addTo(map);
+
+    // =========================================================================
+    // Multi-API Tab Switching Logic
+    // =========================================================================
+    function switchApiTab(providerKey) {
+      if (!tileProviders[providerKey] || providerKey === currentProviderKey) return;
+
+      // Remove current layer
+      map.removeLayer(activeTileLayer);
+
+      // Add new layer
+      activeTileLayer = tileProviders[providerKey].layer;
+      activeTileLayer.addTo(map);
+
+      // Bring markers & overlays to front
+      markersGroup.bringToFront();
+      towersGroup.bringToFront();
+      routeGroup.bringToFront();
+
+      currentProviderKey = providerKey;
+
+      // Update Tab UI
+      document.querySelectorAll('.api-tab-btn').forEach(btn => {
+        if (btn.getAttribute('data-provider') === providerKey) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      // Update HUD Box
+      document.getElementById('hud-provider-title').innerText = tileProviders[providerKey].name;
+      document.getElementById('hud-desc-text').innerHTML = tileProviders[providerKey].desc;
+
+      // Special handling for BTS tab: load towers
+      if (providerKey === 'bts') {
+        plotDemoBtsTowers();
+      }
+
+      // Ensure proper sizing
+      setTimeout(function() { map.invalidateSize(); }, 80);
+    }
+
+    // Attach click events to tabs
+    document.querySelectorAll('.api-tab-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        var provider = this.getAttribute('data-provider');
+        switchApiTab(provider);
+      });
+    });
+
+    // Move to Preset Location
+    function moveTo(lat, lng, zoom, label) {
+      map.setView([lat, lng], zoom);
+      L.marker([lat, lng]).addTo(markersGroup)
+        .bindPopup('<b>' + label + '</b><br>Coordinates: ' + lat + ', ' + lng)
+        .openPopup();
+      updateHudCoords();
+    }
+
+    // Update HUD Coordinates
+    function updateHudCoords() {
+      var center = map.getCenter();
+      var zoom = map.getZoom();
+      document.getElementById('hud-coords-text').innerText = 
+        'Lat: ' + center.lat.toFixed(6) + ' • Lng: ' + center.lng.toFixed(6) + ' • Zoom: ' + zoom;
+    }
+
+    map.on('move', updateHudCoords);
+    map.on('zoom', updateHudCoords);
+
+    // Map Click: Drop custom pin with coordinates
+    map.on('click', function(e) {
+      var lat = e.latlng.lat.toFixed(6);
+      var lng = e.latlng.lng.toFixed(6);
+      var popupContent = `
+        <div style="font-size:0.85rem;">
+          <strong style="color:#00a8ff;"><i class="fa-solid fa-location-dot"></i> Selected GPS Point</strong><br>
+          <b>Latitude:</b> ${lat}<br>
+          <b>Longitude:</b> ${lng}<br>
+          <hr style="margin:4px 0; border:0; border-top:1px solid rgba(255,255,255,0.1);">
+          <small style="color:#10b981;">Target Triangulation Anchor</small>
+        </div>
+      `;
+      L.marker([e.latlng.lat, e.latlng.lng]).addTo(markersGroup)
+        .bindPopup(popupContent)
+        .openPopup();
+    });
+
+    // Search Location (Nominatim OpenStreetMap Geocoding API)
+    function executeSearch() {
+      var query = document.getElementById('map-search-input').value.trim();
+      if (!query) return;
+
+      // Check if coordinates format: lat, lng
+      var coordMatch = query.match(/^([-+]?\d{1,2}(?:\.\d+)?)[,\s]+([-+]?\d{1,3}(?:\.\d+)?)$/);
+      if (coordMatch) {
+        var lat = parseFloat(coordMatch[1]);
+        var lng = parseFloat(coordMatch[2]);
+        map.setView([lat, lng], 14);
+        L.marker([lat, lng]).addTo(markersGroup)
+          .bindPopup('<b>Searched GPS Coordinates</b><br>' + lat + ', ' + lng)
+          .openPopup();
+        return;
+      }
+
+      // Nominatim search
+      var url = 'https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(query);
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.length > 0) {
+            var first = data[0];
+            var lat = parseFloat(first.lat);
+            var lon = parseFloat(first.lon);
+            map.setView([lat, lon], 14);
+            L.marker([lat, lon]).addTo(markersGroup)
+              .bindPopup('<b>' + first.display_name + '</b>')
+              .openPopup();
+          } else {
+            alert('Location not found: ' + query);
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert('Error searching location: ' + err.message);
+        });
+    }
+
+    document.getElementById('btn-search-exec').addEventListener('click', executeSearch);
+    document.getElementById('map-search-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') executeSearch();
+    });
+
+    document.getElementById('btn-draw-marker').addEventListener('click', function() {
+      var center = map.getCenter();
+      L.marker(center).addTo(markersGroup)
+        .bindPopup('<b>Manual Forensic Pin</b><br>' + center.lat.toFixed(6) + ', ' + center.lng.toFixed(6))
+        .openPopup();
+    });
+
+    document.getElementById('btn-print-map').addEventListener('click', function() {
+      window.print();
+    });
+
+    // Plot BTS Cell Towers Function
+    function plotDemoBtsTowers() {
+      towersGroup.clearLayers();
+      routeGroup.clearLayers();
+
+      var center = map.getCenter();
+      var baseLat = center.lat;
+      var baseLng = center.lng;
+
+      var towers = [
+        { lat: baseLat + 0.008, lng: baseLng - 0.007, name: 'BTS Alpha (Tower 101)', lac: '4102', cid: '5811' },
+        { lat: baseLat - 0.005, lng: baseLng + 0.012, name: 'BTS Bravo (Tower 102)', lac: '4102', cid: '5812' },
+        { lat: baseLat + 0.015, lng: baseLng + 0.009, name: 'BTS Charlie (Tower 103)', lac: '4102', cid: '5813' },
+        { lat: baseLat - 0.012, lng: baseLng - 0.010, name: 'BTS Delta (Tower 104)', lac: '4102', cid: '5814' }
+      ];
+
+      var path = [];
+      towers.forEach(t => {
+        path.push([t.lat, t.lng]);
+
+        // Tower coverage circle
+        L.circle([t.lat, t.lng], {
+          radius: 800,
+          color: '#00a8ff',
+          fillColor: '#007bff',
+          fillOpacity: 0.12,
+          weight: 1.5
+        }).addTo(towersGroup);
+
+        // Tower Marker
+        L.marker([t.lat, t.lng]).addTo(towersGroup)
+          .bindPopup(`
+            <div style="font-size:0.85rem;">
+              <strong style="color:#00a8ff;"><i class="fa-solid fa-tower-cell"></i> ${t.name}</strong><br>
+              <b>LAC:</b> ${t.lac} • <b>Cell ID:</b> ${t.cid}<br>
+              <b>Azimuth:</b> 120° Sector A<br>
+              <b>Radius:</b> 800m
+            </div>
+          `);
+      });
+
+      // Connecting movement path
+      L.polyline(path, {
+        color: '#f59e0b',
+        weight: 3,
+        dashArray: '6, 8'
+      }).addTo(routeGroup);
+    }
+
+    // Invalidate size on load
+    window.onload = function() {
+      setTimeout(function() {
+        map.invalidateSize();
+      }, 200);
+    };
+  </script>
+  <!-- Leaflet Code Snippet Modal -->
+  <div id="code-snippet-modal" style="display:none; position:fixed; inset:0; background:rgba(4, 12, 26, 0.85); backdrop-filter:blur(6px); z-index:2000; align-items:center; justify-content:center;">
+    <div style="background:#081426; border:1px solid #00a8ff; border-radius:12px; max-width:620px; width:90%; padding:1.5rem; box-shadow:0 12px 48px rgba(0,0,0,0.8); color:#f8fafc;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid rgba(0,168,255,0.2); padding-bottom:0.75rem;">
+        <div style="font-weight:700; font-size:1.05rem; color:#00a8ff; display:flex; align-items:center; gap:0.5rem;">
+          <i class="fa-solid fa-code"></i> آپ کا شامل کردہ Leaflet OSM کوڈ (User Snippet)
+        </div>
+        <button onclick="toggleCodeModal(false)" style="background:transparent; border:none; color:#cbd5e1; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:0.75rem; line-height:1.5;">
+        یہ وہی کوڈ ہے جو آپ نے فراہم کیا۔ یہ اس لائیو ورک سپیس کے OpenStreetMap ٹیب میں ایکٹیو ہے اور مارکر پاپ اپ شو کرتا ہے:
+      </p>
+      <pre style="background:#030914; border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:1rem; font-family:'JetBrains Mono', monospace; font-size:0.825rem; color:#38bdf8; overflow-x:auto; line-height:1.5;"><code>var map = L.map('map').setView([51.505, -0.09], 13);
+
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; &lt;a href="https://www.openstreetmap.org/copyright"&gt;OpenStreetMap&lt;/a&gt; contributors'
+}).addTo(map);
+
+L.marker([51.5, -0.09]).addTo(map)
+    .bindPopup('A pretty CSS popup.&lt;br&gt; Easily customizable.')
+    .openPopup();</code></pre>
+      <div style="display:flex; justify-content:flex-end; gap:0.5rem; margin-top:1.25rem;">
+        <button class="tool-btn" onclick="navigator.clipboard.writeText(ar map = L.map('map').setView([51.505, -0.09], 13);\n\nL.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {\n    attribution: '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors'\n}).addTo(map);\n\nL.marker([51.5, -0.09]).addTo(map)\n    .bindPopup('A pretty CSS popup.<br> Easily customizable.')\n    .openPopup();); alert('کوڈ کاپی ہو گیا!');">
+          <i class="fa-solid fa-copy"></i> کاپی کریں
+        </button>
+        <button class="tool-btn primary" onclick="switchApiTab('osm'); moveTo(51.505, -0.09, 13, 'OpenStreetMap Point'); toggleCodeModal(false);">
+          <i class="fa-solid fa-play"></i> رن کوڈ (London Point)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleCodeModal(show) {
+      var modal = document.getElementById('code-snippet-modal');
+      if (modal) modal.style.display = show ? 'flex' : 'none';
+    }
+  </script>
+</body>
+</html>
