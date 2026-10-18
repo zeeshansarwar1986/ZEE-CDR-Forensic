@@ -247,6 +247,11 @@ window.BackupModule = {
       const saved = localStorage.getItem('ZEE_CDR_FORENSIC_DB');
       if (saved) {
         const parsed = JSON.parse(saved);
+        // Automatically purge obsolete demo mockup cache
+        if (parsed.currentCaseId === 'CR-2026-8841' && parsed.activeTargetNumber === '03005551234') {
+          localStorage.removeItem('ZEE_CDR_FORENSIC_DB');
+          return false;
+        }
         if (Array.isArray(parsed.cases)) window.CDRDataStore.cases = parsed.cases;
         if (Array.isArray(parsed.cdrRecords)) window.CDRDataStore.cdrRecords = parsed.cdrRecords;
         if (parsed.usageStats) window.CDRDataStore.usageStats = parsed.usageStats;

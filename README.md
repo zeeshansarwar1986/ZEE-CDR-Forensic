@@ -1,5 +1,26 @@
+﻿
+## 💻 Desktop Application & Cross-Platform Installers (v5.2.0)
+
+| Platform | Installer Package | Description |
+| :--- | :--- | :--- |
+| **Windows 11 / 10 / 8 / 7** | [`Setup_CDR_Forensic.exe`](Setup_CDR_Forensic.exe) | Self-contained Windows Setup Wizard. Auto-creates high-res Desktop Shortcut & Start Menu entry, runs in dedicated native app frame (`--app` mode). |
+| **macOS (MacBook M1/M2/M3/M4 & Intel)** | [`CDR_Forensic_Analyzer_macOS.zip`](CDR_Forensic_Analyzer_macOS.zip) | Standalone macOS `.app` bundle. Drag & drop to `/Applications`. Runs in native app mode. |
+| **Electron Cross-Platform Sources** | `package.json`, `main.js` | Complete cross-platform Electron pipeline (`npm run build:win`, `npm run build:mac`). |
+| **Admin License Keygen (Strictly Private)** | [`admin_keygen.html`](admin_keygen.html) | Confidential administrator keygen tool (never included in installer builds). |
+
 # ZEE CDR Forensic - Web Application & Developer Architecture Guide
 **Zee Meta Advertising Agency (Reg) - Forensic Intelligence Division**
+
+---
+
+## 🔐 NEW: Hardware-Locked Offline Licensing & Activation System
+This application features a complete **Machine-Fingerprinted Offline Licensing System** to ensure unauthorized users cannot use the software on any computer or laptop without administrative activation:
+
+- 🔒 **Machine Hardware Key**: Generated automatically from system hardware telemetry (`CDFA-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX`).
+- 🔑 **Cryptographic Activation Key & 6-Digit PIN**: Generated exclusively by the Administrator using the private master generator.
+- 🚀 **Cyber Splash Screen & Engine Loader**: High-definition animated cyber splash screen that boots up on authorized launch.
+- 🛠️ **Private Admin Generator**: [admin_keygen.html](file:///c:/Users/hp/Documents/CDR%20App/admin_keygen.html) allows the administrator to generate single-device keys and export ready-to-send WhatsApp delivery templates.
+- 📖 **مکمل ڈویلپر گائیڈ (اردو میں)**: تفصیلی مرحلہ وار گائیڈ کے لیے [DEVELOPER_GUIDE_URDU.md](file:///c:/Users/hp/Documents/CDR%20App/DEVELOPER_GUIDE_URDU.md) ملاحظہ فرمائیں۔
 
 ---
 

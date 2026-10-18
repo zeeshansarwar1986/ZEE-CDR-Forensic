@@ -3,60 +3,23 @@
    ========================================================================== */
 
 window.CDRDataStore = {
-  // Current Active State
-  currentCaseId: 'CR-2026-8841',
-  activeTargetNumber: '03005551234',
+  // Current Active State (Clean & Ready for User's Own CDR)
+  currentCaseId: '',
+  activeTargetNumber: '',
 
-  // Cases List
-  cases: [
-    {
-      id: 'CR-2026-8841',
-      title: 'Demolition & Targeted Murder Case',
-      offence: '302/34 PPC & 7 ATA',
-      policeStation: 'Secretariat PS, Islamabad',
-      investigatingOfficer: 'Inspector Imran Khan',
-      status: 'Active',
-      createdDate: '2026-10-01',
-      updatedDate: '2026-10-09 11:30',
-      description: 'High-profile conspiracy case involving suspect co-location movement, international calls, and SIM swap activities.',
-      targets: ['03005551234', '03129876543']
-    },
-    {
-      id: 'CR-2026-4412',
-      title: 'Armed Bank Robbery & Gang Tracking',
-      offence: '395/397 PPC',
-      policeStation: 'Saddar PS, Rawalpindi',
-      investigatingOfficer: 'SI Malik Usman',
-      status: 'Pending',
-      createdDate: '2026-09-25',
-      updatedDate: '2026-10-05 09:15',
-      description: 'Bank heist involving 4 suspect CDRs and cell tower transition analysis near Mall Road.',
-      targets: ['03335112233']
-    },
-    {
-      id: 'CR-2026-1090',
-      title: 'Inter-Provincial Narcotics Trafficking',
-      offence: '9-C CNSA',
-      policeStation: 'Industrial Area PS, Islamabad',
-      investigatingOfficer: 'DSP Shahzad Malik',
-      status: 'Completed',
-      createdDate: '2026-08-14',
-      updatedDate: '2026-09-10 16:40',
-      description: 'Multi-state cartel communication breakdown with cross-border call analysis.',
-      targets: ['03455998877']
-    }
-  ],
+  // Cases List (Clean Docket Directory)
+  cases: [],
 
   // System Usage & Analytics Logs
   usageStats: {
-    totalCases: 24,
-    activeCases: 8,
-    pendingCases: 5,
-    completedCases: 11,
-    totalCDRsUploaded: 142,
-    totalRecordsParsed: 458200,
-    openingFrequency: [12, 18, 25, 30, 22, 38, 45],
-    dailyAnalytics: [3200, 4100, 5800, 7200, 6400, 8900, 9500]
+    totalCases: 0,
+    activeCases: 0,
+    pendingCases: 0,
+    completedCases: 0,
+    totalCDRsUploaded: 0,
+    totalRecordsParsed: 0,
+    openingFrequency: [0, 0, 0, 0, 0, 0, 0],
+    dailyAnalytics: [0, 0, 0, 0, 0, 0, 0]
   },
 
   // Ownership / CNIC Intelligence Database
@@ -313,5 +276,8 @@ window.CDRDataStore = {
   }
 };
 
-// Initialize CDR Records on script load
-window.CDRDataStore.reloadDefaultDemoData();
+// Clean Initial State: Database starts empty, ready for user CDR upload
+window.CDRDataStore.cdrRecords = [];
+window.CDRDataStore.cases = [];
+window.CDRDataStore.currentCaseId = '';
+window.CDRDataStore.activeTargetNumber = '';

@@ -20,6 +20,156 @@
 </head>
 <body>
 
+  <!-- ==========================================================================
+       1. ACTIVATION GATE SCREEN (MATCHING SCREENSHOT 1 EXACTLY)
+       ========================================================================== -->
+  <div id="activation-gate-screen" style="display:none;">
+    <div class="activation-box">
+      <!-- Shield Icon -->
+      <div class="activation-shield-icon">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+
+      <div class="activation-title">CDR FORENSIC ANALYZER</div>
+      <div class="activation-sub">ACTIVATION REQUIRED</div>
+
+      <!-- Activation Form -->
+      <div class="activation-form">
+        <!-- Hardware Key Field -->
+        <div>
+          <label class="activation-label">HARDWARE KEY</label>
+          <div class="hw-key-group">
+            <input type="text" id="lic-hw-key-val" class="hw-key-input" readonly value="CDFA-2091-F673-3E37-46AE-AEAA-E2F1-1833" spellcheck="false">
+            <button type="button" id="btn-copy-hw-key" class="hw-copy-btn">
+              <i class="fa-regular fa-copy"></i> Copy
+            </button>
+          </div>
+          <div class="hw-note">Send this key to your administrator for offline activation. Also accepts HW- ... format.</div>
+        </div>
+
+        <!-- Activation Key Field -->
+        <div>
+          <label class="activation-label">ACTIVATION KEY</label>
+          <input type="text" id="lic-act-key-input" class="activation-input" placeholder="CDFA-LIC-XXXX-XXXX or CDR5- ..." autocomplete="off" spellcheck="false">
+        </div>
+
+        <!-- PIN Field -->
+        <div>
+          <label class="activation-label">PIN</label>
+          <input type="password" id="lic-pin-input" class="activation-input" placeholder="6 - d i g i t   P I N" maxlength="6" autocomplete="off">
+        </div>
+
+        <!-- Error Feedback Message -->
+        <div id="lic-error-msg" class="activation-error"></div>
+
+        <!-- Activate Button -->
+        <button type="button" id="btn-submit-activate" class="btn-activate-submit">
+          <i class="fa-solid fa-key"></i> Activate
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       2. SPLASH SCREEN & SECURE ENGINE LOADER (MATCHING SCREENSHOT 2 EXACTLY)
+       ========================================================================== -->
+  <div id="app-splash-screen" style="display:none;">
+    <div class="splash-logo-container" style="width:260px; height:260px;">
+      <!-- Vector High-Definition Forensic Logo Badge -->
+      <svg viewBox="0 0 300 300" width="100%" height="100%" style="filter: drop-shadow(0 0 24px rgba(0, 168, 255, 0.35));">
+        <!-- Definitions for Gradients -->
+        <defs>
+          <radialGradient id="badgeGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#082040" stop-opacity="0.9" />
+            <stop offset="100%" stop-color="#020813" stop-opacity="0.95" />
+          </radialGradient>
+          <linearGradient id="cyanArc" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00d2d3" />
+            <stop offset="100%" stop-color="#0984e3" />
+          </linearGradient>
+          <linearGradient id="cdrTextGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#00a8ff" />
+            <stop offset="100%" stop-color="#007bff" />
+          </linearGradient>
+        </defs>
+
+        <!-- Circular Background Badge -->
+        <circle cx="150" cy="115" r="95" fill="url(#badgeGlow)" stroke="#0f2b48" stroke-width="3" />
+        <circle cx="150" cy="115" r="88" fill="none" stroke="url(#cyanArc)" stroke-width="4" stroke-dasharray="140, 20, 80, 20" />
+
+        <!-- Cell Tower (Left) -->
+        <g transform="translate(80, 55) scale(0.7)">
+          <path d="M25 0 L10 70 M25 0 L40 70 M15 30 L35 30 M12 50 L38 50 M20 15 L30 15" stroke="#00a8ff" stroke-width="2.5" fill="none" />
+          <circle cx="25" cy="0" r="4" fill="#00d2d3" />
+          <path d="M16 -8 A12 12 0 0 1 34 -8" stroke="#38bdf8" stroke-width="2" fill="none" />
+          <path d="M10 -15 A20 20 0 0 1 40 -15" stroke="#38bdf8" stroke-width="1.8" fill="none" opacity="0.7" />
+        </g>
+
+        <!-- Network Nodes (Top-Right) -->
+        <g transform="translate(180, 50) scale(0.65)">
+          <line x1="15" y1="20" x2="45" y2="10" stroke="#00a8ff" stroke-width="2" />
+          <line x1="45" y1="10" x2="60" y2="40" stroke="#00a8ff" stroke-width="2" />
+          <line x1="15" y1="20" x2="40" y2="55" stroke="#00a8ff" stroke-width="2" />
+          <circle cx="15" cy="20" r="5" fill="#10b981" />
+          <circle cx="45" cy="10" r="6" fill="#38bdf8" />
+          <circle cx="60" cy="40" r="5" fill="#10b981" />
+          <circle cx="40" cy="55" r="5" fill="#38bdf8" />
+        </g>
+
+        <!-- Location Pin (Right) -->
+        <g transform="translate(205, 110) scale(0.65)">
+          <path d="M20 0 C9 0 0 9 0 20 C0 35 20 52 20 52 C20 52 40 35 40 20 C40 9 31 0 20 0 Z" fill="#22c55e" opacity="0.9" />
+          <circle cx="20" cy="18" r="7" fill="#040c1a" />
+        </g>
+
+        <!-- CDR Document (Center) -->
+        <rect x="122" y="70" width="46" height="58" rx="4" fill="#ffffff" filter="drop-shadow(0 4px 8px rgba(0,0,0,0.5))" />
+        <text x="145" y="86" font-family="'Inter', sans-serif" font-size="10" font-weight="800" fill="#040c1a" text-anchor="middle">CDR</text>
+        <line x1="128" y1="92" x2="162" y2="92" stroke="#94a3b8" stroke-width="1.5" />
+        <!-- Bar Chart on Document -->
+        <rect x="128" y="112" width="5" height="10" fill="#007bff" />
+        <rect x="135" y="106" width="5" height="16" fill="#10b981" />
+        <rect x="142" y="102" width="5" height="20" fill="#00a8ff" />
+        <rect x="149" y="108" width="5" height="14" fill="#10b981" />
+
+        <!-- Smartphone (Beside Document) -->
+        <rect x="156" y="85" width="22" height="42" rx="4" fill="#0b1728" stroke="#38bdf8" stroke-width="1.8" />
+        <rect x="159" y="90" width="16" height="30" rx="2" fill="#040c1a" />
+        <!-- Phone icon inside screen -->
+        <path d="M165 99 C165 97 169 97 170 100 L168 103 C170 106 172 108 175 110 L178 108 C181 109 181 113 179 113 C173 113 165 105 165 99 Z" fill="#22c55e" transform="scale(0.85) translate(28, 12)" />
+
+        <!-- Large Magnifying Glass (Focusing) -->
+        <circle cx="152" cy="115" r="40" fill="none" stroke="#e2e8f0" stroke-width="6.5" filter="drop-shadow(0 6px 12px rgba(0,0,0,0.6))" />
+        <circle cx="152" cy="115" r="34" fill="rgba(0, 168, 255, 0.08)" />
+        <path d="M182 145 L208 175" stroke="#cbd5e1" stroke-width="8" stroke-linecap="round" />
+        <path d="M188 152 L206 173" stroke="#00a8ff" stroke-width="3" stroke-linecap="round" />
+
+        <!-- Branding Text: CDR ANALYSIS SOFTWARE -->
+        <text x="150" y="235" font-family="'Inter', sans-serif" font-size="34" font-weight="900" fill="url(#cdrTextGrad)" text-anchor="middle" letter-spacing="2">CDR</text>
+        
+        <!-- ANALYSIS SOFTWARE with Green Accent Lines -->
+        <line x1="38" y1="250" x2="72" y2="250" stroke="#22c55e" stroke-width="2" />
+        <text x="150" y="254" font-family="'Inter', sans-serif" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="3.5">ANALYSIS SOFTWARE</text>
+        <line x1="228" y1="250" x2="262" y2="250" stroke="#22c55e" stroke-width="2" />
+
+        <!-- Subtitle: CONNECT • ANALYZE • DISCOVER -->
+        <text x="150" y="272" font-family="'Inter', sans-serif" font-size="8" font-weight="700" fill="#22c55e" text-anchor="middle" letter-spacing="2">CONNECT • ANALYZE • DISCOVER</text>
+      </svg>
+    </div>
+
+    <!-- Starting Engine Labels -->
+    <div>
+      <div class="splash-title">Starting Forensic Analyzer Engine...</div>
+      <div class="splash-subtitle">CDR Forensic Analyzer v5.2.0 • Loading secure backend...</div>
+    </div>
+
+    <!-- Cyber Spinner -->
+    <div class="splash-spinner"></div>
+
+    <!-- Bottom Version Label -->
+    <div class="splash-version">v5.2.0</div>
+  </div>
+
   <!-- Top Header Navigation Bar (Branded to ZEE CDR Forensic) -->
   <header id="top-header">
     <div class="header-left">
@@ -46,6 +196,11 @@
         <i class="fa-regular fa-clock text-cyan-bright"></i>
         <span id="live-header-clock">Sun, Jun 14 12:34:57 PM PKT</span>
       </div>
+
+      <button id="btn-quick-new-case" class="tool-btn primary" title="Quick Register New Case Docket" onclick="document.getElementById('modal-add-case').classList.add('active');" style="font-weight:600;">
+        <i class="fa-solid fa-folder-plus"></i>
+        <span>New Case</span>
+      </button>
 
       <button id="btn-backup-header" class="tool-btn" title="ڈیٹا بیک اپ، اپلوڈ اور ریسیٹ (Data Backup & Reset)" style="border-color: rgba(0, 168, 255, 0.4); color: var(--accent-blue-bright); background: rgba(0, 168, 255, 0.08); font-weight:600;">
         <i class="fa-solid fa-database"></i>
@@ -77,6 +232,10 @@
       <div class="nav-item active" id="nav-overview" data-view="view-overview">
         <i class="fa-solid fa-house"></i>
         <span>Dashboard</span>
+      </div>
+      <div class="nav-item" id="nav-graphical" data-view="view-graphical">
+        <i class="fa-solid fa-chart-line"></i>
+        <span>Graphical Analytics</span>
       </div>
       <div class="nav-item" id="nav-add-case-side" onclick="document.getElementById('modal-add-case').classList.add('active');">
         <i class="fa-solid fa-circle-plus"></i>
@@ -160,56 +319,56 @@
           <div class="metric-card-box">
             <div class="metric-top-icon blue"><i class="fa-solid fa-folder"></i></div>
             <div>
-              <div class="metric-box-val" id="m8-total-cases">8</div>
+              <div class="metric-box-val" id="m8-total-cases">0</div>
               <div class="metric-box-lbl">Total Cases</div>
             </div>
           </div>
           <div class="metric-card-box">
             <div class="metric-top-icon amber"><i class="fa-regular fa-clock"></i></div>
             <div>
-              <div class="metric-box-val" id="m8-pending-cases">6</div>
+              <div class="metric-box-val" id="m8-pending-cases">0</div>
               <div class="metric-box-lbl">Pending Cases</div>
             </div>
           </div>
           <div class="metric-card-box">
             <div class="metric-top-icon green"><i class="fa-solid fa-circle-check"></i></div>
             <div>
-              <div class="metric-box-val" id="m8-completed-cases">1</div>
+              <div class="metric-box-val" id="m8-completed-cases">0</div>
               <div class="metric-box-lbl">Completed Cases</div>
             </div>
           </div>
           <div class="metric-card-box">
             <div class="metric-top-icon purple"><i class="fa-solid fa-circle-exclamation"></i></div>
             <div>
-              <div class="metric-box-val" id="m8-active-investigations">1</div>
+              <div class="metric-box-val" id="m8-active-investigations">0</div>
               <div class="metric-box-lbl">Active Investigations</div>
             </div>
           </div>
           <div class="metric-card-box">
             <div class="metric-top-icon cyan"><i class="fa-solid fa-copy"></i></div>
             <div>
-              <div class="metric-box-val" id="m8-total-cdrs">21</div>
+              <div class="metric-box-val" id="m8-total-cdrs">0</div>
               <div class="metric-box-lbl">Total Uploaded CDRs</div>
             </div>
           </div>
           <div class="metric-card-box">
             <div class="metric-top-icon blue"><i class="fa-solid fa-phone"></i></div>
             <div>
-              <div class="metric-box-val" id="m8-analyzed-numbers">8,855</div>
+              <div class="metric-box-val" id="m8-analyzed-numbers">0</div>
               <div class="metric-box-lbl">Analyzed Numbers</div>
             </div>
           </div>
           <div class="metric-card-box">
             <div class="metric-top-icon purple"><i class="fa-solid fa-users"></i></div>
             <div>
-              <div class="metric-box-val" id="m8-common-numbers">4,155</div>
+              <div class="metric-box-val" id="m8-common-numbers">0</div>
               <div class="metric-box-lbl">Common Numbers</div>
             </div>
           </div>
           <div class="metric-card-box">
             <div class="metric-top-icon cyan"><i class="fa-solid fa-location-dot"></i></div>
             <div>
-              <div class="metric-box-val" id="m8-locations-tracked">1,759</div>
+              <div class="metric-box-val" id="m8-locations-tracked">0</div>
               <div class="metric-box-lbl">Locations Tracked</div>
             </div>
           </div>
@@ -298,6 +457,66 @@
           </div>
         </div>
 
+      </section>
+
+      <!-- VIEW: GRAPHICAL ANALYTICS -->
+      <section id="view-graphical" class="view-page">
+        <div class="page-header">
+          <div>
+            <h1 class="command-title"><i class="fa-solid fa-chart-line text-cyan-bright"></i> Graphical Analytics & Activity Distribution</h1>
+            <p class="command-subtitle">Comprehensive temporal, behavioral, and volume breakdown charts</p>
+          </div>
+        </div>
+
+        <!-- 2 Top Charts Grid -->
+        <div class="charts-top-3-grid" style="grid-template-columns: 2fr 1fr;">
+          <div class="cyber-card">
+            <div class="card-header">
+              <div class="card-title"><i class="fa-solid fa-chart-area text-blue"></i> Daily Call Volume Trends & Peak Days</div>
+            </div>
+            <div style="height: 220px; position:relative;">
+              <canvas id="chart-date-peaks"></canvas>
+            </div>
+          </div>
+
+          <div class="cyber-card">
+            <div class="card-header">
+              <div class="card-title"><i class="fa-solid fa-chart-pie text-cyan-bright"></i> Incoming vs Outgoing Duration Split</div>
+            </div>
+            <div style="height: 220px; position:relative;">
+              <canvas id="chart-duration-split"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2 Bottom Charts Grid -->
+        <div class="charts-bottom-2-grid" style="margin-top: 1rem;">
+          <div class="cyber-card">
+            <div class="card-header">
+              <div class="card-title"><i class="fa-solid fa-calendar-week text-amber"></i> Day of Week Activity Analysis (Sunday - Saturday)</div>
+            </div>
+            <div style="height: 220px; position:relative;">
+              <canvas id="chart-dow-analysis"></canvas>
+            </div>
+          </div>
+
+          <div class="cyber-card">
+            <div class="card-header">
+              <div class="card-title"><i class="fa-solid fa-moon text-purple"></i> Day vs Night Activity Split</div>
+            </div>
+            <div style="height: 220px; position:relative;">
+              <canvas id="chart-day-night-split"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- 24-Hour Activity Heatmap -->
+        <div class="cyber-card" style="margin-top: 1rem;">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-fire text-amber"></i> 24-Hour Activity Heatmap Matrix (Hour 0 to Hour 23)</div>
+          </div>
+          <div id="active-heatmap-grid" class="heatmap-grid" style="display:grid; grid-template-columns: repeat(24, 1fr); gap:4px; height:60px; padding:0.5rem 0;"></div>
+        </div>
       </section>
 
       <!-- VIEW 2: ABOUT AGENCY & INVOICE CONTACT INFO (NEWLY ADDED VIEW) -->
@@ -488,14 +707,66 @@
             <p class="command-subtitle">Active suspect telemetry, peak hours, and key points forensic summary</p>
           </div>
         </div>
-        <div class="cyber-card">
+
+        <!-- Telemetry Summary Cards Grid -->
+        <div class="metrics-8-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom: 1rem;">
+          <div class="metric-card-box">
+            <div class="metric-top-icon cyan"><i class="fa-solid fa-crosshairs"></i></div>
+            <div>
+              <div class="metric-box-val" id="adv-target-num" style="font-size:1.1rem;">Not Loaded</div>
+              <div class="metric-box-lbl">Target Number</div>
+            </div>
+          </div>
+          <div class="metric-card-box">
+            <div class="metric-top-icon green"><i class="fa-solid fa-calendar-days"></i></div>
+            <div>
+              <div class="metric-box-val" id="adv-active-days">8 Days</div>
+              <div class="metric-box-lbl">Active Window</div>
+            </div>
+          </div>
+          <div class="metric-card-box">
+            <div class="metric-top-icon blue"><i class="fa-solid fa-phone-volume"></i></div>
+            <div>
+              <div class="metric-box-val" id="adv-total-calls">0 Total</div>
+              <div class="metric-box-lbl">Total Volume</div>
+            </div>
+          </div>
+          <div class="metric-card-box">
+            <div class="metric-top-icon purple"><i class="fa-solid fa-users"></i></div>
+            <div>
+              <div class="metric-box-val" id="adv-unique-contacts">0 Contacts</div>
+              <div class="metric-box-lbl">Unique Contacts</div>
+            </div>
+          </div>
+          <div class="metric-card-box">
+            <div class="metric-top-icon amber"><i class="fa-solid fa-mobile-screen"></i></div>
+            <div>
+              <div class="metric-box-val" id="adv-unique-imeis" style="font-size:0.95rem;">0 IMEIs</div>
+              <div class="metric-box-lbl">IMEI / IMSI Pairs</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Target Forensic Summary Details Card -->
+        <div class="cyber-card" style="margin-bottom: 1rem;">
           <div class="card-header">
             <div class="card-title"><i class="fa-solid fa-star text-amber"></i> Target Forensic Summary</div>
           </div>
           <div style="font-size:0.9rem; display:flex; flex-direction:column; gap:0.75rem;">
-            <div><strong>Target Number:</strong> <span class="text-cyan-bright">03005551234</span> (Jazz Pakistan)</div>
-            <div><strong>Top Contact:</strong> 03129876543 (Shahbaz Ahmed) - 284 Calls</div>
-            <div><strong>Switch-Off Gap:</strong> Oct 05 from 02:15 AM to 06:30 AM (4.25 hours off)</div>
+            <div><strong>Active Case Docket:</strong> <span class="text-cyan-bright" id="adv-case-id">CR-2026-8841</span> (Demolition & Targeted Murder Case)</div>
+            <div><strong>Primary Target MSISDN:</strong> <span class="text-cyan-bright">03005551234</span> (Jazz Pakistan)</div>
+            <div><strong>Most Contacted B-Party:</strong> 03129876543 (Shahbaz Ahmed - Co-Suspect) - 284 Calls</div>
+            <div><strong>Handset Switch-Off Gap:</strong> Oct 05 from 02:15 AM to 06:30 AM (4.25 hours off)</div>
+          </div>
+        </div>
+
+        <!-- 24-Hour Call Volume Chart -->
+        <div class="cyber-card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-chart-column text-cyan-bright"></i> 24-Hour Hourly Activity Distribution</div>
+          </div>
+          <div style="height: 230px; position:relative;">
+            <canvas id="chart-hourly-distribution"></canvas>
           </div>
         </div>
       </section>
@@ -509,22 +780,39 @@
           </div>
         </div>
         <div class="cyber-card">
-          <div class="card-header">
-            <input type="text" id="raw-cdr-search" class="form-control" placeholder="Search number, location, IMEI..." style="width:280px;">
-            <span class="text-muted" id="raw-cdr-total-label">Showing 1-25 of 1,200 records</span>
+          <div class="card-header" style="flex-wrap: wrap; gap: 0.75rem;">
+            <div style="display: flex; gap: 0.5rem; align-items: center; flex: 1; min-width: 280px;">
+              <input type="text" id="raw-cdr-search" class="form-control" placeholder="Search number, location, IMEI..." style="width:100%; max-width:320px;">
+              <select id="raw-cdr-filter-type" class="form-control" style="width: auto;">
+                <option value="ALL">All Call Types</option>
+                <option value="Incoming">Incoming</option>
+                <option value="Outgoing">Outgoing</option>
+                <option value="SMS">SMS</option>
+              </select>
+            </div>
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+              <span class="text-muted" id="raw-cdr-total-label" style="font-size:0.825rem;">Showing 0-0 of 0 records</span>
+              <div style="display: flex; gap: 0.35rem; align-items: center;">
+                <button class="tool-btn" id="btn-prev-page" title="Previous Page"><i class="fa-solid fa-chevron-left"></i></button>
+                <span style="font-size: 0.8rem; color: #fff; min-width: 65px; text-align: center;">Page <span id="current-page-num" class="text-cyan-bright">1</span> / <span id="total-pages-num">1</span></span>
+                <button class="tool-btn" id="btn-next-page" title="Next Page"><i class="fa-solid fa-chevron-right"></i></button>
+              </div>
+            </div>
           </div>
           <div class="table-responsive">
             <table class="cyber-table">
               <thead>
                 <tr>
-                  <th>#</th>
-                  <th>Timestamp</th>
-                  <th>B-Party Number</th>
-                  <th>Operator</th>
-                  <th>Type</th>
-                  <th>Duration</th>
-                  <th>Cell Location</th>
-                  <th>IMEI Linked</th>
+                  <th class="sortable" data-sort="id">#</th>
+                  <th class="sortable" data-sort="timestamp">Timestamp</th>
+                  <th class="sortable" data-sort="bPartyNumber">B-Party Number</th>
+                  <th class="sortable" data-sort="bPartyOperator">Operator</th>
+                  <th class="sortable" data-sort="callType">Type</th>
+                  <th class="sortable" data-sort="duration">Duration</th>
+                  <th class="sortable" data-sort="locationName">Cell Location</th>
+                  <th>Movement Direction</th>
+                  <th>MFC Code</th>
+                  <th class="sortable" data-sort="imei">IMEI Linked</th>
                 </tr>
               </thead>
               <tbody id="raw-cdr-table-body"></tbody>
@@ -550,6 +838,49 @@
             <button class="tool-btn primary" id="btn-search-cnic">Search</button>
           </div>
           <div id="cnic-result-box" style="padding:1rem; background:#090e1a; border-radius:8px; font-size:0.85rem;"></div>
+        </div>
+
+        <!-- Additional Intelligence Grids -->
+        <div class="charts-top-3-grid" style="grid-template-columns: 1fr 1fr; margin-top: 1rem;">
+          <!-- Operator Distribution Chart -->
+          <div class="cyber-card">
+            <div class="card-header">
+              <div class="card-title"><i class="fa-solid fa-chart-column text-cyan-bright"></i> Telecom Operator Breakdown</div>
+            </div>
+            <div style="height: 220px; position:relative;">
+              <canvas id="chart-operator-breakdown"></canvas>
+            </div>
+          </div>
+
+          <!-- International Numbers Table -->
+          <div class="cyber-card">
+            <div class="card-header">
+              <div class="card-title"><i class="fa-solid fa-globe text-pink"></i> International Contacts & Cross-Border</div>
+            </div>
+            <div class="table-responsive" style="max-height: 220px;">
+              <table class="cyber-table">
+                <thead>
+                  <tr><th>Country</th><th>Number</th><th>Calls</th><th>Duration</th></tr>
+                </thead>
+                <tbody id="intl-contacts-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Helpline & Shortcodes Table -->
+        <div class="cyber-card" style="margin-top: 1rem;">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-hashtag text-amber"></i> Service Numbers & Digital Wallets (JazzCash / Banking)</div>
+          </div>
+          <div class="table-responsive" style="max-height: 200px;">
+            <table class="cyber-table">
+              <thead>
+                <tr><th>Shortcode</th><th>Identified Service</th><th>Activity Count</th></tr>
+              </thead>
+              <tbody id="service-codes-body"></tbody>
+            </table>
+          </div>
         </div>
       </section>
 
@@ -596,6 +927,31 @@
           <div id="geoapify-search-result" style="display:none; margin-top:0.5rem; font-size:0.825rem;" class="text-cyan-bright"></div>
         </div>
 
+        <!-- GPS Movement Playback Controls Bar -->
+        <div class="cyber-card" style="margin-bottom: 0.75rem; padding: 0.6rem 1rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+            <div style="display:flex; gap:0.5rem; align-items:center;">
+              <button id="btn-playback-play" class="tool-btn primary" title="Play Movement Animation">
+                <i class="fa-solid fa-play"></i> Play Route
+              </button>
+              <button id="btn-playback-pause" class="tool-btn" title="Pause Movement Animation">
+                <i class="fa-solid fa-pause"></i> Pause
+              </button>
+              <div style="display:flex; align-items:center; gap:0.4rem; margin-left:0.5rem;">
+                <span style="font-size:0.75rem; color:var(--text-muted);">Speed:</span>
+                <select id="playback-speed-select" class="form-control" style="width: auto; padding: 0.25rem 0.5rem; font-size: 0.8rem;">
+                  <option value="1">1x Speed</option>
+                  <option value="2" selected>2x Speed</option>
+                  <option value="5">5x Speed</option>
+                </select>
+              </div>
+            </div>
+            <div id="playback-status-label" class="text-cyan-bright text-mono" style="font-size:0.8rem;">
+              <i class="fa-solid fa-circle-dot" style="font-size:0.6rem; color:#ef4444;"></i> Route Playback Ready
+            </div>
+          </div>
+        </div>
+
         <div id="gis-map"></div>
       </section>
 
@@ -607,7 +963,18 @@
             <p class="command-subtitle">Interactive target-to-contact node network visualization</p>
           </div>
         </div>
-        <div id="network-container"></div>
+        <div style="position:relative; width:100%; height:540px;">
+          <div id="network-container" style="width:100%; height:100%;"></div>
+          
+          <!-- Slide-out Node Detail Panel -->
+          <div id="node-detail-panel" style="position:absolute; top:12px; right:-360px; width:340px; max-height:516px; background:rgba(7,20,38,0.95); border:1px solid var(--border-color); border-radius:10px; box-shadow:-8px 0 24px rgba(0,0,0,0.6); backdrop-filter:blur(10px); z-index:20; transition:right 0.3s cubic-bezier(0.4, 0, 0.2, 1); display:flex; flex-direction:column; overflow:hidden;">
+            <div style="padding:0.75rem 1rem; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; background:rgba(0,168,255,0.06);">
+              <div class="card-title text-cyan-bright" style="font-size:0.85rem;"><i class="fa-solid fa-circle-nodes"></i> Target Node Telemetry</div>
+              <button class="tool-btn" id="close-node-panel-btn" style="padding:0.25rem 0.5rem;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="node-panel-content" style="padding:1rem; overflow-y:auto; flex:1;"></div>
+          </div>
+        </div>
       </section>
 
       <!-- VIEW 11: MULTI CROSS / COMMON REPORT -->
@@ -617,6 +984,9 @@
             <h1 class="command-title"><i class="fa-solid fa-code-compare text-cyan-bright"></i> Common Report & Multi-Target Cross</h1>
             <p class="command-subtitle">Automated co-location and shared contacts finder</p>
           </div>
+          <button class="tool-btn primary" id="btn-run-cross-analysis">
+            <i class="fa-solid fa-play"></i> Re-Run Cross Analysis
+          </button>
         </div>
         <div class="cyber-card">
           <div class="card-header">
@@ -628,6 +998,21 @@
                 <tr><th>Common B-Party</th><th>Target A Calls</th><th>Target B Calls</th></tr>
               </thead>
               <tbody id="cross-contacts-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Co-Location Towers Table -->
+        <div class="cyber-card" style="margin-top: 1rem;">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-tower-broadcast text-cyan-bright"></i> Co-Location Towers (Physical Proximity Overlaps)</div>
+          </div>
+          <div class="table-responsive">
+            <table class="cyber-table">
+              <thead>
+                <tr><th>Cell Tower / Sector Location</th><th>Dwell Time & Physical Proximity</th></tr>
+              </thead>
+              <tbody id="cross-locations-body"></tbody>
             </table>
           </div>
         </div>
@@ -836,6 +1221,7 @@
   <script src="js/modules/multi_cross.js"></script>
   <script src="js/modules/exporter.js"></script>
   <script src="js/modules/backup_manager.js"></script>
+    <script src="js/modules/licensing.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

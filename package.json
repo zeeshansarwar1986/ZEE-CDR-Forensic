@@ -1,0 +1,55 @@
+﻿{
+  "name": "zee-cdr-forensic-analyzer",
+  "version": "5.2.0",
+  "description": "ZEE CDR Mobile Forensic and Intelligence Analysis System",
+  "main": "main.js",
+  "author": "ZEE Forensic Labs",
+  "license": "Proprietary",
+  "scripts": {
+    "start": "electron .",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac dmg",
+    "build:all": "electron-builder -mw"
+  },
+  "build": {
+    "appId": "com.zee.forensic.cdr",
+    "productName": "CDR Forensic Analyzer",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "index.html",
+      "css/**/*",
+      "js/**/*",
+      "assets/**/*",
+      "!admin_keygen.html",
+      "!*.bat",
+      "!*.cs",
+      "!*.md",
+      "!*.zip"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/app_icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "CDR Forensic Analysis Software"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "assets/app_icon.png",
+      "category": "public.app-category.utilities"
+    }
+  },
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3"
+  }
+}

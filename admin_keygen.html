@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ur" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZEE CDR Forensic - Admin License Key Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-dark: #040c1a;
+      --bg-card: #081426;
+      --bg-input: #030a16;
+      --border-color: rgba(0, 168, 255, 0.25);
+      --accent-blue: #007bff;
+      --accent-cyan: #00a8ff;
+      --accent-green: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-purple: #a855f7;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --font-family: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-family);
+      background: radial-gradient(circle at 50% 20%, #081830 0%, #030712 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .keygen-card {
+      background: rgba(8, 20, 38, 0.95);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 168, 255, 0.1);
+      width: 100%;
+      max-width: 680px;
+      padding: 2.25rem;
+      backdrop-filter: blur(12px);
+    }
+
+    .card-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .shield-icon {
+      width: 64px;
+      height: 64px;
+      background: rgba(0, 168, 255, 0.1);
+      border: 2px solid rgba(0, 168, 255, 0.4);
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: var(--accent-cyan);
+      box-shadow: 0 0 24px rgba(0, 168, 255, 0.3);
+      margin-bottom: 1rem;
+    }
+
+    .card-title {
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #fff;
+      text-transform: uppercase;
+    }
+
+    .card-subtitle {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      letter-spacing: 2px;
+      margin-top: 0.35rem;
+      text-transform: uppercase;
+    }
+
+    .badge-agency {
+      display: inline-block;
+      margin-top: 0.5rem;
+      font-size: 0.725rem;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0.2rem 0.65rem;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: var(--font-mono);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 16px rgba(0, 168, 255, 0.3);
+    }
+
+    .btn-generate {
+      width: 100%;
+      background: linear-gradient(135deg, #007bff, #00a8ff);
+      color: #fff;
+      border: none;
+      padding: 0.85rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      box-shadow: 0 8px 24px rgba(0, 123, 255, 0.4);
+      transition: transform 0.15s, box-shadow 0.15s;
+      margin-top: 1rem;
+    }
+
+    .btn-generate:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 30px rgba(0, 123, 255, 0.6);
+    }
+
+    .result-section {
+      display: none;
+      margin-top: 1.75rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-box {
+      background: rgba(4, 12, 26, 0.9);
+      border: 1px solid rgba(0, 168, 255, 0.35);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.85rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .result-row:last-child { margin-bottom: 0; }
+
+    .result-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .result-val {
+      font-family: var(--font-mono);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+
+    .btn-copy {
+      background: rgba(0, 168, 255, 0.15);
+      border: 1px solid rgba(0, 168, 255, 0.4);
+      color: #38bdf8;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: background 0.15s;
+    }
+
+    .btn-copy:hover {
+      background: rgba(0, 168, 255, 0.3);
+      color: #fff;
+    }
+
+    .btn-copy-msg {
+      width: 100%;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34d399;
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-copy-msg:hover {
+      background: rgba(16, 185, 129, 0.3);
+      color: #fff;
+    }
+
+    .urdu-guide {
+      margin-top: 1.5rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 1rem;
+      font-size: 0.825rem;
+      line-height: 1.6;
+      color: #cbd5e1;
+      direction: rtl;
+      text-align: right;
+    }
+
+    .urdu-guide h4 {
+      color: var(--accent-amber);
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.925rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="keygen-card">
+    <div class="card-header">
+      <div class="shield-icon">
+        <i class="fa-solid fa-user-shield"></i>
+      </div>
+      <h1 class="card-title">ZEE CDR Forensic</h1>
+      <div class="card-subtitle">Admin Master License Key Generator</div>
+      <div class="badge-agency">Zee Meta Advertising Agency (Reg) • Official Administrator Tool</div>
+    </div>
+
+    <!-- Client Hardware Key Input -->
+    <div class="form-group">
+      <label class="form-label">Client Hardware Key (مطلوبہ کمپیوٹر کی ہارڈویئر کی درج کریں)</label>
+      <input type="text" id="client-hw-input" class="form-control" placeholder="e.g. CDFA-2091-F673-3E37-46AE-AEAA-E2F1-1833" autocomplete="off" spellcheck="false">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Client / Agency Name (اختیاری کلائنٹ نام یا محکمہ)</label>
+      <input type="text" id="client-name-input" class="form-control" style="font-family:var(--font-family);" placeholder="e.g. FIA Cyber Wing / Inspector Malik / Agency Client" autocomplete="off">
+    </div>
+
+    <button id="btn-generate-license" class="btn-generate">
+      <i class="fa-solid fa-key"></i> ایکٹیویشن کی اور پن تیار کریں (Generate License Key & PIN)
+    </button>
+
+    <!-- Generated License Results -->
+    <div id="result-section" class="result-section">
+      <div class="result-box">
+        <!-- Activation Key Row -->
+        <div class="result-row">
+          <div>
+            <div class="result-label">Generated Activation Key:</div>
+            <div id="res-activation-key" class="result-val">CDFA-LIC-XXXX-XXXX</div>
+          </div>
+          <button class="btn-copy" id="btn-copy-act-key"><i class="fa-regular fa-copy"></i> Copy Key</button>
+        </div>
+
+        <!-- 6-digit PIN Row -->
+        <div class="result-row" style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.75rem;">
+          <div>
+            <div class="result-label">Security 6-Digit PIN:</div>
+            <div id="res-pin" class="result-val" style="color:var(--accent-amber); letter-spacing: 3px;">000000</div>
+          </div>
+          <button class="btn-copy" id="btn-copy-pin"><i class="fa-regular fa-copy"></i> Copy PIN</button>
+        </div>
+      </div>
+
+      <!-- Quick WhatsApp / Delivery Message Copy -->
+      <button id="btn-copy-delivery-msg" class="btn-copy-msg">
+        <i class="fa-brands fa-whatsapp" style="font-size:1.1rem;"></i> کلائنٹ کو بھیجنے والا مکمل میسج کاپی کریں (Copy Delivery Text)
+      </button>
+
+      <!-- Urdu Guide Card -->
+      <div class="urdu-guide">
+        <h4><i class="fa-solid fa-circle-info"></i> ایڈمن گائیڈ: یہ کی کیسے کام کرتی ہے؟</h4>
+        <p>1. کلائنٹ اپنا سافٹ ویئر کھول کر اپنی اسکرین پر نظر آنے والی <strong>HARDWARE KEY</strong> کاپی کر کے آپ کو بھیجے گا۔</p>
+        <p>2. آپ وہ کی اوپر پیسٹ کر کے <strong>"ایکٹیویشن کی اور پن تیار کریں"</strong> پر کلک کریں۔</p>
+        <p>3. تیار شدہ <strong>Activation Key</strong> اور <strong>PIN</strong> کلائنٹ کو فراہم کریں۔ وہ اپنے سسٹم میں ڈال کر 'Activate' دبائے گا تو سافٹ ویئر فوری ان لاک ہو جائے گا۔</p>
+        <p>4. یہ لائسنس صرف اسی کے مخصوص کمپیوٹر پر چلے گا، اگر وہ سافٹ ویئر کسی دوسرے لیپ ٹاپ پر کاپی کرے گا تو وہ لاک ہی رہے گا۔</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Pure JS SHA-256 Algorithm
+    function sha256(ascii) {
+      function rightRotate(value, amount) { return (value >>> amount) | (value << (32 - amount)); }
+      var mathPow = Math.pow, maxWord = mathPow(2, 32), lengthProperty = 'length', i, j, result = '';
+      var words = [], asciiBitLength = ascii[lengthProperty] * 8, hash = [], k = [], primeCounter = 0, isComposite = {};
+      for (var candidate = 2; primeCounter < 64; candidate++) {
+        if (!isComposite[candidate]) {
+          for (i = 0; i < 300; i += candidate) isComposite[i] = candidate;
+          hash[primeCounter] = (mathPow(candidate, 0.5) * maxWord) | 0;
+          k[primeCounter++] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
+        }
+      }
+      ascii += '\x80';
+      while ((ascii[lengthProperty] % 64) - 56) ascii += '\x00';
+      for (i = 0; i < ascii[lengthProperty]; i++) {
+        j = ascii.charCodeAt(i);
+        if (j >> 8) return;
+        words[i >> 2] |= j << ((3 - (i % 4)) * 8);
+      }
+      words[words[lengthProperty]] = (asciiBitLength / maxWord) | 0;
+      words[words[lengthProperty]] = asciiBitLength | 0;
+      for (j = 0; j < words[lengthProperty]; ) {
+        var w = words.slice(j, (j += 16)), oldHash = hash;
+        hash = hash.slice(0, 8);
+        for (i = 0; i < 64; i++) {
+          var w15 = w[i - 15], w2 = w[i - 2];
+          var s0 = rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3);
+          var s1 = rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10);
+          w[i] = i < 16 ? w[i] : (w[i - 16] + s0 + w[i - 7] + s1) | 0;
+          var s1_maj = rightRotate(hash[0], 2) ^ rightRotate(hash[0], 13) ^ rightRotate(hash[0], 22);
+          var maj = (hash[0] & hash[1]) ^ (hash[0] & hash[2]) ^ (hash[1] & hash[2]);
+          var t2 = (s1_maj + maj) | 0;
+          var s1_ch = rightRotate(hash[4], 6) ^ rightRotate(hash[4], 11) ^ rightRotate(hash[4], 25);
+          var ch = (hash[4] & hash[5]) ^ (~hash[4] & hash[6]);
+          var t1 = (hash[7] + s1_ch + ch + k[i] + w[i]) | 0;
+          hash = [(t1 + t2) | 0].concat(hash);
+          hash[4] = (hash[4] + t1) | 0;
+        }
+        for (i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
+      }
+      for (i = 0; i < 8; i++) {
+        for (j = 3; j >= 0; j--) {
+          var b = (hash[i] >> (j * 8)) & 255;
+          result += (b < 16 ? '0' : '') + b.toString(16);
+        }
+      }
+      return result;
+    }
+
+    const SECRET_SALT = 'ZEE_META_FORENSIC_SECURE_SALT_2026_AGENCY_KEY_9841';
+
+    function deriveLicensePair(hwKey) {
+      const cleanHw = (hwKey || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (!cleanHw) return { activationKey: '', pin: '' };
+
+      const hash = sha256(cleanHw + '###' + SECRET_SALT).toUpperCase();
+      const actKey = 'CDFA-LIC-' + hash.substring(0, 4) + '-' + hash.substring(4, 8);
+      const pinInt = parseInt(hash.substring(10, 16), 16) % 1000000;
+      const pinStr = pinInt.toString().padStart(6, '0');
+
+      return { activationKey: actKey, pin: pinStr };
+    }
+
+    const generateBtn = document.getElementById('btn-generate-license');
+    const hwInput = document.getElementById('client-hw-input');
+    const nameInput = document.getElementById('client-name-input');
+    const resultSection = document.getElementById('result-section');
+    const resActKey = document.getElementById('res-activation-key');
+    const resPin = document.getElementById('res-pin');
+
+    function handleGenerate() {
+      const hw = hwInput.value.trim();
+      if (!hw) {
+        alert('براہ کرم کلائنٹ کی ہارڈویئر کی درج کریں!');
+        hwInput.focus();
+        return;
+      }
+
+      const pair = deriveLicensePair(hw);
+      resActKey.innerText = pair.activationKey;
+      resPin.innerText = pair.pin;
+      resultSection.style.display = 'block';
+    }
+
+    generateBtn.onclick = handleGenerate;
+    hwInput.onkeypress = (e) => { if (e.key === 'Enter') handleGenerate(); };
+
+    // Copy Activation Key
+    document.getElementById('btn-copy-act-key').onclick = function() {
+      navigator.clipboard.writeText(resActKey.innerText);
+      this.innerHTML = '<i class="fa-solid fa-check text-green"></i> Copied!';
+      setTimeout(() => { this.innerHTML = '<i class="fa-regular fa-copy"></i> Copy Key'; }, 2000);
+    };
+
+    // Copy PIN
+    document.getElementById('btn-copy-pin').onclick = function() {
+      navigator.clipboard.writeText(resPin.innerText);
+      this.innerHTML = '<i class="fa-solid fa-check text-green"></i> Copied!';
+      setTimeout(() => { this.innerHTML = '<i class="fa-regular fa-copy"></i> Copy PIN'; }, 2000);
+    };
+
+    // Copy Complete Delivery WhatsApp Message
+    document.getElementById('btn-copy-delivery-msg').onclick = function() {
+      const hw = hwInput.value.trim();
+      const client = nameInput.value.trim() || 'Respected Investigator / Client';
+      const key = resActKey.innerText;
+      const pin = resPin.innerText;
+
+      const message = 
+`السلام علیکم ${client}!
+آپ کا ZEE CDR Forensic Analyzer v5.2.0 کا آفیشل ایکٹیویشن لائسنس درج ذیل ہے:
+
+🔒 Hardware Key: ${hw}
+🔑 Activation Key: ${key}
+🔢 Security PIN: ${pin}
+
+سافٹ ویئر کو اپنے کمپیوٹر پر کھول کر یہ چابی اور پن درج کریں اور 'Activate' پر کلک کریں۔
+شکریہ!
+Zee Meta Advertising Agency (Reg) - Forensic Tech Division`;
+
+      navigator.clipboard.writeText(message);
+      this.innerHTML = '<i class="fa-solid fa-check text-green"></i> میسج کاپی ہو گیا (Copied to Clipboard)!';
+      setTimeout(() => {
+        this.innerHTML = '<i class="fa-brands fa-whatsapp" style="font-size:1.1rem;"></i> کلائنٹ کو بھیجنے والا مکمل میسج کاپی کریں (Copy Delivery Text)';
+      }, 2500);
+    };
+  </script>
+</body>
+</html>

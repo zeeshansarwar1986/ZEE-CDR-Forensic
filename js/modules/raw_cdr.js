@@ -8,14 +8,19 @@ window.RawCDRModule = {
   currentSortField: 'id',
   currentSortAsc: true,
   filteredRecords: [],
+  eventsBound: false,
 
   init: function() {
-    this.filteredRecords = [...window.CDRDataStore.cdrRecords];
+    this.filteredRecords = [...(window.CDRDataStore.cdrRecords || [])];
     this.bindEvents();
+    this.applySort();
     this.renderGrid();
   },
 
   bindEvents: function() {
+    if (this.eventsBound) return;
+    this.eventsBound = true;
+
     const searchInput = document.getElementById('raw-cdr-search');
     if (searchInput) {
       searchInput.addEventListener('input', () => this.applyFilters());
@@ -39,7 +44,7 @@ window.RawCDRModule = {
     const nextBtn = document.getElementById('btn-next-page');
     if (nextBtn) {
       nextBtn.onclick = () => {
-        const totalPages = Math.ceil(this.filteredRecords.length / this.pageSize);
+        const totalPages = Math.max(1, Math.ceil(this.filteredRecords.length / this.pageSize));
         if (this.currentPage < totalPages) {
           this.currentPage++;
           this.renderGrid();
@@ -64,14 +69,19 @@ window.RawCDRModule = {
   },
 
   applyFilters: function() {
-    const q = (document.getElementById('raw-cdr-search')?.value || '').toLowerCase();
+    const q = (document.getElementById('raw-cdr-search')?.value || '').trim().toLowerCase();
     const type = document.getElementById('raw-cdr-filter-type')?.value || 'ALL';
 
-    this.filteredRecords = window.CDRDataStore.cdrRecords.filter(r => {
-      const matchSearch = r.bPartyNumber.toLowerCase().includes(q) ||
-                          r.locationName.toLowerCase().includes(q) ||
-                          r.imei.toLowerCase().includes(q) ||
-                          r.cellId.toLowerCase().includes(q);
+    const records = window.CDRDataStore.cdrRecords || [];
+
+    this.filteredRecords = records.filter(r => {
+      const bParty = (r.bPartyNumber || '').toLowerCase();
+      const loc = (r.locationName || '').toLowerCase();
+      const imei = (r.imei || '').toLowerCase();
+      const cell = (r.cellId || '').toLowerCase();
+      const op = (r.bPartyOperator || '').toLowerCase();
+
+      const matchSearch = !q || bParty.includes(q) || loc.includes(q) || imei.includes(q) || cell.includes(q) || op.includes(q);
       const matchType = (type === 'ALL') || (r.callType === type);
       return matchSearch && matchType;
     });
@@ -85,6 +95,8 @@ window.RawCDRModule = {
     this.filteredRecords.sort((a, b) => {
       let valA = a[this.currentSortField];
       let valB = b[this.currentSortField];
+      if (valA === undefined) valA = '';
+      if (valB === undefined) valB = '';
       if (typeof valA === 'string') valA = valA.toLowerCase();
       if (typeof valB === 'string') valB = valB.toLowerCase();
       if (valA < valB) return this.currentSortAsc ? -1 : 1;
@@ -99,37 +111,60 @@ window.RawCDRModule = {
 
     const totalRecords = this.filteredRecords.length;
     const totalPages = Math.max(1, Math.ceil(totalRecords / this.pageSize));
+    if (this.currentPage > totalPages) this.currentPage = totalPages;
+
     const startIdx = (this.currentPage - 1) * this.pageSize;
     const endIdx = Math.min(startIdx + this.pageSize, totalRecords);
     const pageRecords = this.filteredRecords.slice(startIdx, endIdx);
 
-    // Update labels
-    document.getElementById('current-page-num').innerText = this.currentPage;
-    document.getElementById('total-pages-num').innerText = totalPages;
-    document.getElementById('raw-cdr-total-label').innerText = `Showing ${totalRecords > 0 ? startIdx + 1 : 0}-${endIdx} of ${totalRecords.toLocaleString()} records`;
+    // Update labels safely
+    const curPageEl = document.getElementById('current-page-num');
+    const totPageEl = document.getElementById('total-pages-num');
+    const totalLblEl = document.getElementById('raw-cdr-total-label');
+
+    if (curPageEl) curPageEl.innerText = this.currentPage;
+    if (totPageEl) totPageEl.innerText = totalPages;
+    if (totalLblEl) {
+      totalLblEl.innerText = Showing - of  records;
+    }
+
+    if (pageRecords.length === 0) {
+      tbody.innerHTML = 
+        <tr>
+          <td colspan="10" style="text-align:center; padding:2rem; color:var(--text-muted);">
+            <i class="fa-solid fa-folder-open" style="font-size:1.5rem; margin-bottom:0.5rem; display:block;"></i>
+            No CDR records match the current search or filters.
+          </td>
+        </tr>
+      ;
+      return;
+    }
 
     tbody.innerHTML = pageRecords.map(r => {
-      const opClass = r.bPartyOperator.toLowerCase();
-      const typeClass = r.callType.toLowerCase();
-      const movement = (r.cellId.includes('F6') || r.cellId.includes('F7')) ? 'North <i class="fa-solid fa-arrow-right"></i> Central' : 'Central <i class="fa-solid fa-arrow-down"></i> South';
+      const op = r.bPartyOperator || 'Other';
+      const opClass = op.toLowerCase();
+      const callType = r.callType || 'Call';
+      const typeClass = callType.toLowerCase();
+      const cellId = r.cellId || '';
+      const movement = (cellId.includes('F6') || cellId.includes('F7')) ? 'North <i class="fa-solid fa-arrow-right"></i> Central' : 'Central <i class="fa-solid fa-arrow-down"></i> South';
 
-      return `
+      return 
         <tr>
-          <td><strong class="text-muted">${r.id}</strong></td>
-          <td class="text-mono">${r.timestamp}</td>
-          <td><strong class="text-cyan">${r.bPartyNumber}</strong></td>
-          <td><span class="operator-tag ${opClass}">${r.bPartyOperator}</span></td>
-          <td><span class="type-tag ${typeClass}">${r.callType}</span></td>
-          <td class="text-mono">${r.duration}s</td>
+          <td><strong class="text-muted"></strong></td>
+          <td class="text-mono"></td>
+          <td><strong class="text-cyan"></strong></td>
+          <td><span class="operator-tag "></span></td>
+          <td><span class="type-tag "></span></td>
+          <td class="text-mono">s</td>
           <td>
-            <div><strong>${r.locationName}</strong></div>
-            <span class="text-dim" style="font-size:0.75rem;">${r.cellId}</span>
+            <div><strong></strong></div>
+            <span class="text-dim" style="font-size:0.75rem;"></span>
           </td>
-          <td><span class="direction-indicator">${movement}</span></td>
-          <td class="text-mono text-muted">${r.mfc}</td>
-          <td class="text-mono" style="font-size:0.75rem;">${r.imei}</td>
+          <td><span class="direction-indicator"></span></td>
+          <td class="text-mono text-muted"></td>
+          <td class="text-mono" style="font-size:0.75rem;"></td>
         </tr>
-      `;
+      ;
     }).join('');
   }
 };

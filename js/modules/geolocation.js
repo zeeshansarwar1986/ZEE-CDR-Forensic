@@ -16,15 +16,34 @@ window.GeoLocationModule = {
   playbackTimer: null,
   playbackIndex: 0,
   playbackSpeed: 500,
+  eventsBound: false,
 
   init: function() {
     this.initMap();
     this.bindEvents();
+    this.invalidateSize();
+  },
+
+  invalidateSize: function() {
+    if (this.map) {
+      setTimeout(() => {
+        try {
+          this.map.invalidateSize();
+        } catch (e) {
+          console.warn('Map invalidateSize error:', e);
+        }
+      }, 150);
+    }
   },
 
   initMap: function() {
     const mapEl = document.getElementById('gis-map');
-    if (!mapEl || this.map) return;
+    if (!mapEl) return;
+
+    if (this.map) {
+      this.plotData();
+      return;
+    }
 
     // Default view centered on Islamabad / Rawalpindi sector
     this.map = L.map('gis-map').setView([33.6844, 73.0479], 12);
@@ -33,7 +52,7 @@ window.GeoLocationModule = {
     const tileUrl = `https://tiles.locationiq.com/v3/dark/r/{z}/{x}/{y}.png?key=${this.apiKey}`;
     L.tileLayer(tileUrl, {
       maxZoom: 19,
-      attribution: 'Powered by <a href="https://locationiq.com/" target="_blank">LocationIQ</a> | &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      attribution: 'Powered by <a href="https://locationiq.com/" target="_blank">LocationIQ</a> | &copy; OpenStreetMap contributors'
     }).addTo(this.map);
 
     this.layers.towers.addTo(this.map);
@@ -52,7 +71,7 @@ window.GeoLocationModule = {
     this.layers.towers.clearLayers();
     this.layers.routes.clearLayers();
 
-    const records = window.CDRDataStore.cdrRecords;
+    const records = window.CDRDataStore.cdrRecords || [];
     if (!records || records.length === 0) return;
 
     // Group by location/cellId
@@ -60,10 +79,12 @@ window.GeoLocationModule = {
     const routePoints = [];
 
     records.forEach(r => {
+      if (!r.lat || !r.lng) return;
+
       if (!locationMap[r.cellId]) {
         locationMap[r.cellId] = {
           id: r.cellId,
-          name: r.locationName,
+          name: r.locationName || 'Tower',
           lat: r.lat,
           lng: r.lng,
           count: 0,
@@ -123,6 +144,9 @@ window.GeoLocationModule = {
   },
 
   bindEvents: function() {
+    if (this.eventsBound) return;
+    this.eventsBound = true;
+
     const playBtn = document.getElementById('btn-playback-play');
     if (playBtn) playBtn.onclick = () => this.startPlayback();
 
@@ -132,33 +156,31 @@ window.GeoLocationModule = {
     const speedSelect = document.getElementById('playback-speed-select');
     if (speedSelect) {
       speedSelect.onchange = (e) => {
-        const mult = parseInt(e.target.value, 10);
+        const mult = parseInt(e.target.value, 10) || 2;
         this.playbackSpeed = 1000 / mult;
+        if (this.playbackTimer) {
+          this.startPlayback(); // restart with new speed
+        }
       };
     }
 
-    // Geoapify Search Button & Input Event
+    // Geocoding Search Button & Input Event
     const searchBtn = document.getElementById('btn-geoapify-search');
     const searchInput = document.getElementById('geoapify-search-input');
 
     if (searchBtn && searchInput) {
       searchBtn.onclick = () => {
         const query = searchInput.value.trim();
-        if (query) this.searchGeoapify(query);
+        if (query) this.searchLocationIQ(query);
       };
 
       searchInput.onkeypress = (e) => {
         if (e.key === 'Enter') {
           const query = searchInput.value.trim();
-          if (query) this.searchGeoapify(query);
+          if (query) this.searchLocationIQ(query);
         }
       };
     }
-  },
-
-  // LocationIQ Geocoding API Search Function
-  searchGeoapify: function(query) {
-    this.searchLocationIQ(query);
   },
 
   searchLocationIQ: function(query) {
@@ -166,10 +188,7 @@ window.GeoLocationModule = {
     if (!this.apiKey) {
       if (resultBox) {
         resultBox.style.display = 'block';
-        resultBox.innerHTML = `<span class="text-amber"><i class="fa-solid fa-key"></i> براہ کرم نقشہ تلاش کے لیے API Key درج کریں۔</span>`;
-      }
-      if (window.App && window.App.showToast) {
-        window.App.showToast('Please provide an API Key for Geocoding Search', 'warning');
+        resultBox.innerHTML = `<span class="text-amber"><i class="fa-solid fa-key"></i> Please configure a LocationIQ API key.</span>`;
       }
       return;
     }
@@ -215,7 +234,6 @@ window.GeoLocationModule = {
               <div style="font-size:0.8rem;"><b>Longitude:</b> ${lon.toFixed(5)}</div>
               ${address.city || address.town ? `<div style="font-size:0.8rem;"><b>City:</b> ${address.city || address.town}</div>` : ''}
               ${address.country ? `<div style="font-size:0.8rem;"><b>Country:</b> ${address.country}</div>` : ''}
-              ${address.postcode ? `<div style="font-size:0.8rem;"><b>Postcode:</b> ${address.postcode}</div>` : ''}
             </div>
           `).openPopup();
 
@@ -245,7 +263,6 @@ window.GeoLocationModule = {
       });
   },
 
-  // LocationIQ Reverse Geocoding API
   reverseGeocode: function(lat, lng) {
     if (!this.apiKey) return;
     const endpoint = `https://us1.locationiq.com/v1/reverse?key=${this.apiKey}&lat=${lat}&lon=${lng}&format=json`;
@@ -280,8 +297,13 @@ window.GeoLocationModule = {
 
   startPlayback: function() {
     this.pausePlayback();
-    const records = window.CDRDataStore.cdrRecords;
-    if (!records || records.length === 0) return;
+    const records = (window.CDRDataStore.cdrRecords || []).filter(r => r.lat && r.lng);
+    if (!records || records.length === 0) {
+      if (window.App && window.App.showToast) {
+        window.App.showToast('No geolocation coordinates in current dataset for playback.', 'warning');
+      }
+      return;
+    }
 
     const statusLabel = document.getElementById('playback-status-label');
 
@@ -294,18 +316,23 @@ window.GeoLocationModule = {
       }).addTo(this.map);
     }
 
+    if (this.playbackIndex >= records.length) {
+      this.playbackIndex = 0;
+    }
+
     this.playbackTimer = setInterval(() => {
       if (this.playbackIndex >= records.length) {
         this.playbackIndex = 0;
       }
       const r = records[this.playbackIndex];
-      this.layers.animatedMarker.setLatLng([r.lat, r.lng]);
-
-      if (statusLabel) {
-        statusLabel.innerText = `[${this.playbackIndex + 1}/${records.length}] ${r.timestamp} - ${r.locationName}`;
+      if (r && r.lat && r.lng) {
+        this.layers.animatedMarker.setLatLng([r.lat, r.lng]);
+        if (statusLabel) {
+          statusLabel.innerHTML = `<i class="fa-solid fa-person-walking text-cyan-bright"></i> [${this.playbackIndex + 1}/${records.length}] <strong>${r.locationName}</strong> <span class="text-dim">(${r.timestamp})</span>`;
+        }
       }
 
-      this.playbackIndex += 5;
+      this.playbackIndex += Math.max(1, Math.floor(records.length / 50));
     }, this.playbackSpeed);
   },
 
@@ -315,6 +342,8 @@ window.GeoLocationModule = {
       this.playbackTimer = null;
     }
     const statusLabel = document.getElementById('playback-status-label');
-    if (statusLabel) statusLabel.innerText = 'Paused';
+    if (statusLabel) {
+      statusLabel.innerHTML = '<i class="fa-solid fa-pause text-amber"></i> Playback Paused';
+    }
   }
 };

@@ -1,10 +1,12 @@
 /* ==========================================================================
    MODULE: COMMAND CENTER OVERVIEW DASHBOARD
-   Matches Exact Reference Screenshots (Image 1 & Image 2)
+   Matches Exact Reference Screenshots
    ========================================================================== */
 
 window.OverviewModule = {
   charts: {},
+  clockInterval: null,
+  previewMap: null,
 
   init: function() {
     this.renderMetrics();
@@ -20,11 +22,18 @@ window.OverviewModule = {
   startLiveClock: function() {
     const clockEl = document.getElementById('live-header-clock');
     if (!clockEl) return;
-    setInterval(() => {
+
+    const updateClock = () => {
       const now = new Date();
       const options = { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
       clockEl.innerText = `${now.toLocaleDateString('en-US', options)} PKT`;
-    }, 1000);
+    };
+
+    updateClock();
+
+    if (!this.clockInterval) {
+      this.clockInterval = setInterval(updateClock, 1000);
+    }
   },
 
   renderMetrics: function() {
@@ -62,7 +71,7 @@ window.OverviewModule = {
   // Chart 1: Investigation Progress (Donut Chart)
   renderChartProgress: function() {
     const ctx = document.getElementById('chart-investigation-progress');
-    if (!ctx) return;
+    if (!ctx || typeof Chart === 'undefined') return;
     if (this.charts.progress) this.charts.progress.destroy();
 
     const cases = window.CDRDataStore.cases || [];
@@ -112,19 +121,23 @@ window.OverviewModule = {
     });
   },
 
-  // Chart 2: Most Active Cases (Bar Chart - Image 1)
+  // Chart 2: Most Active Cases (Bar Chart)
   renderChartMostActive: function() {
     const ctx = document.getElementById('chart-most-active-cases');
-    if (!ctx) return;
+    if (!ctx || typeof Chart === 'undefined') return;
     if (this.charts.mostActive) this.charts.mostActive.destroy();
+
+    const cases = window.CDRDataStore.cases || [];
+    const labels = cases.length > 0 ? cases.slice(0, 4).map(c => c.id) : ['No Cases'];
+    const dataVals = cases.length > 0 ? [13484, 8500, 4200, 2100].slice(0, cases.length) : [0];
 
     this.charts.mostActive = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: ['Final (001)', 'CR-8841', 'CR-4412', 'CR-1090'],
+        labels: labels,
         datasets: [{
           label: 'CDR Events',
-          data: [13484, 8500, 4200, 2100],
+          data: dataVals,
           backgroundColor: 'rgba(37, 99, 235, 0.85)',
           hoverBackgroundColor: '#3b82f6',
           borderRadius: 4
@@ -151,10 +164,10 @@ window.OverviewModule = {
     });
   },
 
-  // Chart 3: Frequent Locations (Green Bar Chart - Image 1)
+  // Chart 3: Frequent Locations (Green Bar Chart)
   renderChartFrequentLocations: function() {
     const ctx = document.getElementById('chart-frequent-locations');
-    if (!ctx) return;
+    if (!ctx || typeof Chart === 'undefined') return;
     if (this.charts.frequentLoc) this.charts.frequentLoc.destroy();
 
     this.charts.frequentLoc = new Chart(ctx, {
@@ -180,10 +193,10 @@ window.OverviewModule = {
     });
   },
 
-  // Chart 4: Software Usage Daily (Line with Dot Points - Image 1)
+  // Chart 4: Software Usage Daily (Line with Dot Points)
   renderChartSoftwareUsageDaily: function() {
     const ctx = document.getElementById('chart-software-usage-daily');
-    if (!ctx) return;
+    if (!ctx || typeof Chart === 'undefined') return;
     if (this.charts.usageDaily) this.charts.usageDaily.destroy();
 
     const days = Array.from({length: 30}, (_, i) => `Day ${i+1}`);
@@ -218,10 +231,10 @@ window.OverviewModule = {
     });
   },
 
-  // Chart 5: Software Open Times Hourly (Purple Smooth Wave - Image 1)
+  // Chart 5: Software Open Times Hourly (Purple Smooth Wave)
   renderChartSoftwareOpenHourly: function() {
     const ctx = document.getElementById('chart-software-open-hourly');
-    if (!ctx) return;
+    if (!ctx || typeof Chart === 'undefined') return;
     if (this.charts.openHourly) this.charts.openHourly.destroy();
 
     const hours = Array.from({length: 24}, (_, i) => `${i}:00`);
@@ -255,7 +268,14 @@ window.OverviewModule = {
 
   renderPreviewMap: function() {
     const mapEl = document.getElementById('overview-map-preview');
-    if (!mapEl || this.previewMap) return;
+    if (!mapEl || typeof L === 'undefined') return;
+
+    if (this.previewMap) {
+      setTimeout(() => {
+        try { this.previewMap.invalidateSize(); } catch (e) {}
+      }, 150);
+      return;
+    }
 
     this.previewMap = L.map('overview-map-preview', {
       zoomControl: false,
