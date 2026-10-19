@@ -276,9 +276,6 @@
       <div class="nav-item" id="nav-geolocation" data-view="view-geolocation" onclick="window.open('map_workspace.html', '_blank');">
         <i class="fa-solid fa-map-location-dot"></i>
         <span>Geo-Location Map</span>
-        <span style="margin-left:auto; font-size:0.65rem; background:rgba(0,168,255,0.2); color:#00a8ff; padding:2px 6px; border-radius:4px; border:1px solid rgba(0,168,255,0.4);" title="کلک کرنے پر الگ ٹیب میں میپ اوپن ہوگا">↗ الگ ٹیب</span>
-        <i class="fa-solid fa-map-location-dot"></i>
-        <span>Geo-Location Map</span>
       </div>
       <div class="nav-item" id="nav-link-analysis" data-view="view-link-analysis">
         <i class="fa-solid fa-diagram-project"></i>
@@ -974,28 +971,28 @@
         </div>
 
         <!-- In-App Multi-API Provider Tabs Bar -->
-        <div class="cyber-card" style="margin-bottom: 0.75rem; padding: 0.6rem 0.85rem;">
-          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.6rem;">
-            <div style="font-size:0.825rem; font-weight:700; color:var(--accent-cyan); display:flex; align-items:center; gap:0.4rem;">
+        <div class="cyber-card" style="margin-bottom: 0.75rem; padding: 0.5rem 0.75rem;">
+          <div style="display:flex; align-items:center; gap:0.6rem; flex-wrap:nowrap; overflow-x:auto;">
+            <div style="font-size:0.8rem; font-weight:700; color:var(--accent-cyan); display:flex; align-items:center; gap:0.35rem; white-space:nowrap; flex-shrink:0;">
               <i class="fa-solid fa-layer-group"></i> میپ اے پی آئی سلیکٹر (Map APIs):
             </div>
-            <div style="display:flex; gap:0.35rem; flex-wrap:wrap;" id="inapp-map-api-tabs">
-              <button type="button" class="tool-btn inapp-api-tab primary active" data-provider="osm" style="font-size:0.775rem;">
+            <div style="display:flex; gap:0.3rem; flex-wrap:nowrap; align-items:center;" id="inapp-map-api-tabs">
+              <button type="button" class="tool-btn inapp-api-tab primary active" data-provider="osm" style="font-size:0.75rem; padding:0.35rem 0.55rem; white-space:nowrap; flex-shrink:0;">
                 <i class="fa-solid fa-map"></i> OpenStreetMap (OSM)
               </button>
-              <button type="button" class="tool-btn inapp-api-tab" data-provider="google-sat" style="font-size:0.775rem;">
+              <button type="button" class="tool-btn inapp-api-tab" data-provider="google-sat" style="font-size:0.75rem; padding:0.35rem 0.55rem; white-space:nowrap; flex-shrink:0;">
                 <i class="fa-solid fa-satellite"></i> Google Satellite
               </button>
-              <button type="button" class="tool-btn inapp-api-tab" data-provider="google-road" style="font-size:0.775rem;">
+              <button type="button" class="tool-btn inapp-api-tab" data-provider="google-road" style="font-size:0.75rem; padding:0.35rem 0.55rem; white-space:nowrap; flex-shrink:0;">
                 <i class="fa-solid fa-road"></i> Google Roadmap
               </button>
-              <button type="button" class="tool-btn inapp-api-tab" data-provider="locationiq" style="font-size:0.775rem;">
+              <button type="button" class="tool-btn inapp-api-tab" data-provider="locationiq" style="font-size:0.75rem; padding:0.35rem 0.55rem; white-space:nowrap; flex-shrink:0;">
                 <i class="fa-solid fa-moon"></i> LocationIQ Dark GIS
               </button>
-              <button type="button" class="tool-btn inapp-api-tab" data-provider="esri" style="font-size:0.775rem;">
+              <button type="button" class="tool-btn inapp-api-tab" data-provider="esri" style="font-size:0.75rem; padding:0.35rem 0.55rem; white-space:nowrap; flex-shrink:0;">
                 <i class="fa-solid fa-globe"></i> Esri World Imagery
               </button>
-              <button type="button" class="tool-btn inapp-api-tab" data-provider="bts" style="font-size:0.775rem;">
+              <button type="button" class="tool-btn inapp-api-tab" data-provider="bts" style="font-size:0.75rem; padding:0.35rem 0.55rem; white-space:nowrap; flex-shrink:0;">
                 <i class="fa-solid fa-tower-cell"></i> BTS Cellular Grid
               </button>
             </div>
